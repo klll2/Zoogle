@@ -1,7 +1,5 @@
 from django.db import models
-
 # Create your models here.
-
 class Area(models.Model):
     area_id = models.IntegerField(primary_key=True)
     area_name = models.CharField(max_length=20)
