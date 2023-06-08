@@ -1,6 +1,7 @@
 from django.urls import path
 
 from Zoo import views
+import templates
 
 urlpatterns = [
     path('', views.animal_list, name = 'animal_list'),

@@ -1,5 +1,5 @@
 from django import forms
-from Zoo.models import Animal, Zone, Parttime, Zookeeper
+from Zoo.models import Animal, Zone, PartTime, Zookeeper
 
 class AnimalForm(forms.ModelForm):
     class Meta:

@@ -14,8 +14,7 @@
         {% csrf_token %}
 
         <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <label for="zid">ZooKeeper ID:</label> {{ form.zkp_id }}
         </div>
 
         <div>
@@ -29,7 +28,39 @@
         </div>
 
         <div>
-            <input type="submit" value="Create User">
+            <label>Name:</label> {{ form.zkp_name }}
+        </div>
+
+        <div>
+            <label>Call:</label> {{ form.zkp_call }}
+        </div>
+
+        <div>
+            <label>Career:</label> {{ form.zkp_carr }}
+        </div>
+
+        <div>
+             <label for="my-select">Zone:</label>
+              <select id="my-select" name="selected-value">
+                <option value="" selected>Select an option</option>
+                {% for item in zone %}
+                  <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+              </select>
+        </div>
+
+        <div>
+            <label for="my-select2">Part Time:</label>
+              <select id="my-select2" name="selected-value2">
+                <option value="" selected>Select an option</option>
+                {% for item in pt %}
+                  <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+              </select>
+        </div>
+
+        <div>
+            <button class="btn btn-default" type="submit">Save</button>
         </div>
     </form>
 

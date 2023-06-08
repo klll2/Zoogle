@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main</title>
+    <link rel="stylesheet" href= "{% static 'css/style.css' %}" />
+    <script src="/static/js/script.js"></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <!--logo-->
+      <div class="nav_logo">
+        <a href="main.html">Zootopia</a>
+      </div>
+      <!--navbarsearch-->
+      <form class="nav_search">
+        <div class="nav_search_input">
+          <input
+            class=""
+            type="text"
+            placeholder="Search for..."
+            aria-label="Search for..."
+            aria-describedby="btnNavbarSearch"
+          />
+        </div>
+      </form>
+    </nav>
+    <!--sidebar-->
+    <div class="sidebar">
+      <nav class="sidebar_nav">
+        <div class="menu">
+          <div class="item">
+            <a class="sub-btn"
+              ><i class="fas fa-table"></i>Tables<i
+                class="fas fa-angle-right dropdown"
+              ></i
+            ></a>
+            <div class="sub-menu">
+              <a href="#" class="sub-item">ASIA</a>
+              <a href="#" class="sub-item">AFRICA</a>
+              <a href="#" class="sub-item">AMERICA</a>
+              <a href="#" class="sub-item">OCEANIA</a>
+            </div>
+          </div>
+          <div class="item">
+            <a class="sub-btn"
+              ><i class="fas fa-cogs"></i>Settings<i
+                class="fas fa-angle-right dropdown"
+              ></i
+            ></a>
+            <div class="sub-menu">
+              <a href="#" class="sub-item">Sub Item 01</a>
+              <a href="#" class="sub-item">Sub Item 02</a>
+            </div>
+          </div>
+          <div class="item">
+            <a href="#"><i class="fas fa-info-circle"></i>About</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!--main-->
+    <main>
+      <article class="profile">
+        <div class="cover"></div>
+        <div class="user_pic">
+          <img
+            src="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-"
+            alt=""
+            class="profile_img"
+          />
+        </div>
+        <div class="main_detail">
+          <h1>{{ zkp.zkp_name }}</h1>
+          <h4>zookeeper</h4>
+          <input type="button" value="edit" class="profile_edit" />
+          <input type="button" value="love" class="profile_edit" />
+        </div>
+        <div class="user-complete-detail">
+          <div class="user-meta-details">
+            <div class="user-social">
+              <table>
+                <tbody>
+                  <tr>
+                    <td><b>Call</b></td>
+                    <td>:</td>
+                    <td>{{ zkp.zkp_call }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Career</b></td>
+                    <td>:</td>
+                    <td>{{ zkp.zkp_carr }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Zone</b></td>
+                    <td>:</td>
+                    <td>{{ zkp.zone.zone_name }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Part Time</b></td>
+                    <td>:</td>
+                      <td>{{ zkp.pt.pt_name }} ({{ zkp.pt.pt_start }}~{{ zkp.pt.pt_end }})</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="container">
+        <ul class="tabs">
+          <li class="active"><a href="#home">Animal</a></li>
+          <li><a href="#about">Schedule</a></li>
+          <li><a href="#contact">others</a></li>
+        </ul>
+        <div class="tabsContainer">
+          <div class="tabWrapper">
+            <div id="home" class="tabContent">
+              <div class="animal_list">
+                <h4>My Animal</h4>
+                <card class="tab_animal" id="first_animal">
+                  <div class="tab_animal_row">
+                    <img
+                      src="/static/assets/2.jpeg"
+                      alt=""
+                      class="animal_img"
+                    />
+                    <table class="user-social">
+                      <caption>
+                        <b>이상해씨</b>
+                      </caption>
+                      <tbody>
+                        <tr>
+                          <td>sex</td>
+                          <td>:</td>
+                          <td>male</td>
+                        </tr>
+                        <tr>
+                          <td>habitat</td>
+                          <td>:</td>
+                          <td>Asia</td>
+                        </tr>
+                        <tr>
+                          <td>family</td>
+                          <td>:</td>
+                          <td>idunno</td>
+                        </tr>
+                        <tr>
+                          <td>zookeeper</td>
+                          <td>:</td>
+                          <td>{{ zkp.zkp_name }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </card>
+
+                <card class="tab_animal" id="second_animal">
+                  <div class="tab_animal_row">
+                    <img
+                      src="/static/assets/3.jpeg"
+                      alt=""
+                      class="animal_img"
+                    />
+                    <table class="user-social">
+                      <caption>
+                        <b>파이리</b>
+                      </caption>
+                      <tbody>
+                        <tr>
+                          <td>sex</td>
+                          <td>:</td>
+                          <td>male</td>
+                        </tr>
+                        <tr>
+                          <td>habitat</td>
+                          <td>:</td>
+                          <td>Asia</td>
+                        </tr>
+                        <tr>
+                          <td>family</td>
+                          <td>:</td>
+                          <td>idunno</td>
+                        </tr>
+                        <tr>
+                          <td>zookeeper</td>
+                          <td>:</td>
+                          <td>{{ zkp.zkp_name }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </card>
+                <card class="tab_animal" id="third_animal">
+                  <div class="tab_animal_row">
+                    <img
+                      src="/static/assets/1.jpeg"
+                      alt=""
+                      class="animal_img"
+                    />
+                    <table class="user-social">
+                      <caption>
+                        <b>꼬부기</b>
+                      </caption>
+                      <tbody>
+                        <tr>
+                          <td>sex</td>
+                          <td>:</td>
+                          <td>male</td>
+                        </tr>
+                        <tr>
+                          <td>habitat</td>
+                          <td>:</td>
+                          <td>Asia</td>
+                        </tr>
+                        <tr>
+                          <td>family</td>
+                          <td>:</td>
+                          <td>idunno</td>
+                        </tr>
+                        <tr>
+                          <td>zookeeper</td>
+                          <td>:</td>
+                          <td>{{ zkp.zkp_name }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </card>
+              </div>
+            </div>
+            <div id="about" class="tabContent">
+              <h1>Schedule Page</h1>
+            </div>
+            <div id="contact" class="tabContent">
+              <h1>other Page</h1>
+            </div>
+          </div>
+        </div>
+      </article>
+    </main>
+    <script src="http://ajax.google.com/ajax/libs/jquery/q.qw.4/jquery.min.js"></script>
+  </body>
+</html>

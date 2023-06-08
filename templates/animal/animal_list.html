@@ -12,11 +12,11 @@
      <th>sex</th>
      <th>birth</th>
      <th>rct</th>
-      <th>Zone</th>>
+      <th>Zone</th>
      <th> Update </th>
   </tr>
   <tr>
-  {% for animal in animals%}
+  {% for animal in animals %}
     <td> {{ animal.anm_id }} </td>
     <td> {{ animal.anm_name }} </td>
     <td> {{ animal.anm_spcs }}</td>
@@ -24,7 +24,7 @@
     <td> {{ animal.anm_sex }}</td>
     <td> {{ animal.anm_birth }}</td>
     <td> {{ animal.anm_rct }}</td>
-    <td> {{ animal.zone_name }}</td>
+    <td> {{ animal.zone_id.zone_name}}</td>
     <td> <a class="btn btn-info" href ="{%url 'animal_update' animal.anm_id %}" >Update  </a> <td>
     </tr>
   {%endfor%}
