@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 # Create your models here.
 
 
@@ -25,9 +26,12 @@ class Zone(models.Model):
 
 class Zookeeper(models.Model):
     zkp_id = models.IntegerField(primary_key=True)
+    zkp_pw = models.CharField(max_length=50)
+    zkp_cpw = models.CharField(max_length=50)
     zkp_name = models.CharField(max_length=11)
     zkp_call = models.CharField(max_length=11)
     zkp_carr = models.CharField(max_length=10)
+    zkp_join = models.DateTimeField()
     zone = models.ForeignKey('Zone', on_delete=models.CASCADE)
     pt = models.ForeignKey('PartTime', on_delete=models.CASCADE)
 
