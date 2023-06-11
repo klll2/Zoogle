@@ -67,7 +67,10 @@ def user_login(request):
             login(request, user)
             un = int(username)
             zkp = Zookeeper.objects.get(pk=un)
-            return render(request, 'index.html', {'zkp': zkp})
+            area = Area.objects.all()
+            zone = Zone.objects.all()
+
+            return render(request, 'index.html', {'zkp': zkp, 'area': area, 'zone': zone})
         else:
             return render(request, 'login2.html', {'message': 'Invalid username or password.'})
 

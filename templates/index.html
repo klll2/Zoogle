@@ -68,35 +68,34 @@
         <div class="sidebar-heading">Area</div>
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-          <a
-            class="nav-link collapsed"
-            href="#"
-            data-toggle="collapse"
-            data-target="#collapseTwo"
-            aria-expanded="true"
-            aria-controls="collapseTwo"
-          >
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Asia</span>
-          </a>
-          <div
-            id="collapseTwo"
-            class="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">zone:</h6>
-              <a class="collapse-item" href="zone.html">Monkey</a>
-              <a class="collapse-item" href="zone.html">Tiger</a>
-              <a class="collapse-item" href="zone.html">Bear</a>
-              <a class="collapse-item" href="zone.html">sudal</a>
-              <a class="collapse-item" href="zone.html">panda</a>
-            </div>
-          </div>
-        </li>
-
+        {% for i in area %}
+            <li class="nav-item">
+              <a
+                class="nav-link collapsed"
+                href="#"
+                data-toggle="collapse"
+                data-target="#collapseTwo"
+                aria-expanded="true"
+                aria-controls="collapseTwo"
+              >
+                <i class="fas fa-fw fa-cog"></i>
+                <span>{{ i.area_name }}</span>
+              </a>
+              <div
+                id="collapseTwo"
+                class="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <h6 class="collapse-header">zone:</h6>
+                    {% for i in zone %}
+                        <a class="collapse-item" href="{%url 'zone' i.zone_id %}" >{{ i.zone_name }}</a>
+                    {% endfor %}
+                </div>
+              </div>
+            </li>
+        {% endfor %}
         <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item">
           <a
@@ -528,6 +527,7 @@
                                   </tr>
                                 </thead>
                                 <tbody>
+
                                   <tr>
                                     <td>
                                       <img

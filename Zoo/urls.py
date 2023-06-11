@@ -10,6 +10,6 @@ urlpatterns = [
     path('delete/<int:id>/', views.animal_delete, name = 'animal_delete'),
     path('login/', views.user_login, name='login'),
     path('user_create/', views.user_create, name='user_create'),
-#    path('zkp_create/', views.zkp_create, name='zkp_create'),
     path('index/', views.index, name='index'),
+    path('zone/<int:id>', views.zone, name='zone'),
 ]
