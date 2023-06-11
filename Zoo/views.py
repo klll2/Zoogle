@@ -3,15 +3,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from Zoo.models import Area, Zone, Animal, CheckLog, DetailLog, PartTime, Zookeeper
-from Zoo.forms import AnimalForm, ZkpForm
+from Zoo.forms import AnimalForm, ZkpForm, ZoneForm
 from django.shortcuts import render, redirect
+from django.contrib import auth
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from datetime import datetime
-
-
-def index(request):
-    return render(request, 'index.html')
 
 
 def user_create(request):
@@ -64,17 +61,29 @@ def user_login(request):
 
         if user is not None:
             # Log in the user
-            login(request, user)
-            un = int(username)
-            zkp = Zookeeper.objects.get(pk=un)
-            area = Area.objects.all()
-            zone = Zone.objects.all()
-
-            return render(request, 'index.html', {'zkp': zkp, 'area': area, 'zone': zone})
+            auth.login(request, user)
+            request.session['username'] = user.username
+            return redirect('index')
         else:
             return render(request, 'login2.html', {'message': 'Invalid username or password.'})
 
     return render(request, 'login2.html')
+
+
+def logout(request):
+    # 세션에서 사용자 정보 삭제
+    del request.session['username']
+    return redirect('login')
+
+
+def index(request):
+    uid = request.session['username']
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+    anm_all = Animal.objects.all()
+    return render(request, 'index.html', {'zkp': zkp, 'zn_all': zn_all, 'area_all': area_all, 'anm_all': anm_all})
 
 
 def animal_list(request):
@@ -128,3 +137,16 @@ def id_auto(id):
         return anm_auto
     else:
         return id
+
+
+def zone(request, id):
+    zn = Zone.objects.get(zone_id=id)
+    form = ZoneForm(request.POST or None, instance=zn)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+
+    if form.is_valid():
+        form.save()
+        return redirect('zone_list')
+
+    return render(request, 'zone.html', {'form': form, 'zn': zn, 'zn_all': zn_all, 'area_all': area_all})

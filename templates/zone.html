@@ -42,7 +42,7 @@
         <!-- Sidebar - Brand -->
         <a
           class="sidebar-brand d-flex align-items-center justify-content-center"
-          href="index.html"
+          href="{% url 'index' %}"
         >
           <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
@@ -55,7 +55,7 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="{%url 'index' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Main</span></a
           >
@@ -68,122 +68,38 @@
         <div class="sidebar-heading">Area</div>
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-          <a
-            class="nav-link collapsed"
-            href="#"
-            data-toggle="collapse"
-            data-target="#collapseTwo"
-            aria-expanded="true"
-            aria-controls="collapseTwo"
-          >
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Asia</span>
-          </a>
-          <div
-            id="collapseTwo"
-            class="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">zone:</h6>
-              <a class="collapse-item" href="buttons.html">Monkey</a>
-              <a class="collapse-item" href="cards.html">Tiger</a>
-              <a class="collapse-item" href="cards.html">Bear</a>
-              <a class="collapse-item" href="cards.html">sudal</a>
-              <a class="collapse-item" href="cards.html">panda</a>
-            </div>
-          </div>
-        </li>
-
+        {% for i in area_all %}
+            <li class="nav-item">
+              <a
+                class="nav-link collapsed"
+                href="#"
+                data-toggle="collapse"
+                data-target="#collapseTwo"
+                aria-expanded="true"
+                aria-controls="collapseTwo"
+              >
+                <i class="fas fa-fw fa-cog"></i>
+                <span>{{ i.area_name }}</span>
+              </a>
+              <div
+                id="collapseTwo"
+                class="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <h6 class="collapse-header">zone:</h6>
+                    {% for j in zone_all %}
+                        {% if j.area_id == i.area_id %}
+                            <a class="collapse-item" href="{%url 'zone' j.zone_id %}" >{{ j.zone_name }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+              </div>
+            </li>
+        {% endfor %}
         <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item">
-          <a
-            class="nav-link collapsed"
-            href="#"
-            data-toggle="collapse"
-            data-target="#collapseUtilities"
-            aria-expanded="true"
-            aria-controls="collapseUtilities"
-          >
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>America</span>
-          </a>
-          <div
-            id="collapseUtilities"
-            class="collapse"
-            aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar"
-          >
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">zone:</h6>
-              <a class="collapse-item" href="utilities-color.html">Anaconda</a>
-              <a class="collapse-item" href="utilities-border.html">Eagle</a>
-              <a class="collapse-item" href="utilities-animation.html"
-                >flmingo</a
-              >
-              <a class="collapse-item" href="utilities-other.html">Buffalo</a>
-            </div>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link collapsed"
-            href="#"
-            data-toggle="collapse"
-            data-target="#collapseUtilities"
-            aria-expanded="true"
-            aria-controls="collapseUtilities"
-          >
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Africa</span>
-          </a>
-          <div
-            id="collapseUtilities"
-            class="collapse"
-            aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar"
-          >
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">zone:</h6>
-              <a class="collapse-item" href="utilities-color.html">Elephant</a>
-              <a class="collapse-item" href="utilities-border.html">Giraffe</a>
-              <a class="collapse-item" href="utilities-animation.html">Lion</a>
-              <a class="collapse-item" href="utilities-other.html">Penguin</a>
-            </div>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link collapsed"
-            href="#"
-            data-toggle="collapse"
-            data-target="#collapseUtilities"
-            aria-expanded="true"
-            aria-controls="collapseUtilities"
-          >
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Austrailia</span>
-          </a>
-          <div
-            id="collapseUtilities"
-            class="collapse"
-            aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar"
-          >
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">zone:</h6>
-              <a class="collapse-item" href="utilities-color.html">Koala</a>
-              <a class="collapse-item" href="utilities-border.html">Kangaroo</a>
-              <a class="collapse-item" href="utilities-animation.html"
-                >앵무새</a
-              >
-              <a class="collapse-item" href="utilities-other.html">Crocodile</a>
-              <a class="collapse-item" href="utilities-other.html">Seal</a>
-            </div>
-          </div>
-        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider" />
 
@@ -213,6 +129,7 @@
               <h6 class="collapse-header">Login Screens:</h6>
               <a class="collapse-item" href="login.html">Login</a>
               <a class="collapse-item" href="register.html">Register</a>
+              <a class="collapse-item" href="{% url 'logout' %}">Logout</a>
               <a class="collapse-item" href="forgot-password.html"
                 >Forgot Password</a
               >
@@ -420,7 +337,7 @@
                 <div class="covwe-inn">
                   <div class="row no-margin">
                     <div class="col-md-9 tit-det">
-                      <h1>Monkey</h1>
+                      <h1>{{ zn.zone_name }}</h1>
                     </div>
                   </div>
                 </div>
