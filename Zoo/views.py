@@ -107,8 +107,12 @@ def id_auto(id):
         auto_zone = int(a_zone[0]) + 1
         return auto_zone
     elif len(id) >= 2:
-        a_anm = Animal.objects.filter(zone_id=id).values_list("anm_id", flat=True).order_by("-anm_id")
-        auto_anm = int(a_anm[0]) + 1
+        a = []
+        for i in anm_all:
+            if str(i)[0:2] == id and Animal.objects.filter(zone_id=id).exists():
+                a.append(i)
+        a = sorted(a, reverse=True)
+        auto_anm = int(a[0]) + 1
         while auto_anm in anm_all:
             auto_anm += 1
         return auto_anm
@@ -140,6 +144,7 @@ def animal_detail(request, id):
     anm_list = Animal.objects.all().values_list('anm_id', flat=True)
     zn_list = Zone.objects.all().values_list('zone_id', flat=True)
     today = date.today()
+    i = True
 
     if id in anm_list:
         m = "Modify"
@@ -157,7 +162,7 @@ def animal_detail(request, id):
 
         return render(request, 'animal_detail.html', {'anm': anm, 'zn_all': zn_all,
                                                       'anm_list': anm_list, 'm': m, 'today': today,
-                                                      'form': form, 'check_list': check_list})
+                                                      'form': form, 'check_list': check_list, 'i': i})
 
     elif id in zn_list:
         m = "Create"
