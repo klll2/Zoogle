@@ -12,7 +12,17 @@
       <label>sex</label>  {{ form.anm_sex }} </br>
       <label>birth</label>  {{ form.anm_birth }} </br>
       <label>rct</label>  {{ form.anm_rct }} </br>
-      <label>Zone : ({{ animal.zone_id.zone_name }})</label>  {{ form.zone_id }} </br>
+      <div class="row-cols-auto">
+      <label for="zone_id">Zone</label>
+      <select id="zone_id" name="zone_id">
+      <option value="{{ form.zone_id }}" selected>{{ form.zone_id.zone_name }}</option>
+          {% for i in zon %}
+              {% if i.0 != form.zone_id.zone_id %}
+                  <option value="{{ i.0 }}">{{ i.1 }}</option>
+              {% endif %}
+          {% endfor %}
+      </select>
+      </div>
   <button class="btn btn-default" type="submit">Save</button>
   <button onclick="window.history.back();" class="btn btn-default" type="button">Cancel</button>
 </form>

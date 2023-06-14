@@ -30,7 +30,37 @@
     <link rel="stylesheet" href="{% static 'css/fontawsom-all.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/animal_detail.css' %}" />
   </head>
+  <script>
+      function plzalert() {
+          window.onload = function() {
+            alert("Modification Completed");
+          };
+        }
+      function plzconfirm() {
+          let i = {{ i }}
+          if (i) {
+              let result = confirm("Are you sure you want to delete?");
+              if (result) {
+                // 사용자가 OK를 선택한 경우
+                alert("Good bye, We'll miss you.");
+                window.location.href = "{% url 'animal_delete' anm.anm_id %}";
+                // 삭제 동작 수행
+              }
+          }
+        }
+      function openPopup() {
+    // 팝업 창의 크기와 위치 등을 설정합니다.
+            var width = 500;
+            var height = 500;
+            var left = (window.innerWidth - width) / 2;
+            var top = (window.innerHeight - height) / 2;
+            let url = "{% url 'write_log' anm.anm_id %}"
 
+            // 팝업 창을 열기 위한 윈도우 창을 생성합니다.
+            window.open(url, "_blank", 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
+        }
+
+  </script>
   <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -55,7 +85,7 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="{%url 'index' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Main</span></a
           >
@@ -555,34 +585,76 @@
                     <div class="col-md-3 img-c">
                       <img src="/static/assets/1.jpeg" class="rounded" />
                     </div>
-                    <div class="col-md-9 tit-det">
-                      <h2>kkobuki</h2>
-                      <div class="text-secondary">monkey</div>
+                      <style>
+                      .my-element {
+                        width: 80px;
+                      }
+                      </style>
 
-                      <table class="addrss-list">
-                        <tbody>
-                          <tr>
-                            <th>ID</th>
-                            <td>201904484</td>
-                          </tr>
-                          <tr>
-                            <th>Experience</th>
-                            <td>5+ Years</td>
-                          </tr>
-                          <tr>
-                            <th>phone</th>
-                            <td>010-1234-5678</td>
-                          </tr>
-                          <tr>
-                            <th>Zone</th>
-                            <td>Monkey</td>
-                          </tr>
-                          <tr>
-                            <th></th>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                      <div class="my-element"></div>
+                       <div>
+                        <form method="POST" id="anm_mdf" name="anm_mdf" >
+                          {% csrf_token %}
+                              <div class="form-group" >
+                                  <div class="row-cols-auto">
+                                    <label for="anm_id">ID:</label>
+                                    <input type="number" id="anm_id" name="anm_id" value="{{ anm.anm_id }}" readonly required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_name">Name:</label>
+                                        <input type="text" id="anm_name" name="anm_name" value="{{ anm.anm_name }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_spcs">Species:</label>
+                                        <input type="text" id="anm_spcs" name="anm_spcs" value="{{ anm.anm_spcs }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_city">From:</label>
+                                        <input type="text" id="anm_city" name="anm_city" value="{{ anm.anm_city }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_sex">Sex:</label>
+                                        <input type="text" id="anm_sex" name="anm_sex" value="{{ anm.anm_sex }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_old">Old:</label>
+                                        <input type="number" id="anm_old" name="anm_old" value="{{ anm.anm_old }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_rct">Recent Residence:</label>
+                                        <input type="text" id="anm_rct" name="anm_rct" value="{{ anm.anm_rct }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_rct">Food:</label>
+                                        <input type="text" id="anm_food" name="anm_food" value="{{ anm.anm_food }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <label for="anm_rct">Medicine:</label>
+                                        <input type="text" id="anm_mc" name="anm_mc" value="{{ anm.anm_mc }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                        <input type="hidden" id="anm_check" name="anm_check" value="{{ anm.anm_check }}" required>
+                                  </div>
+                                  <div class="row-cols-auto">
+                                  <label for="zone_id">Zone</label>
+                                    <select id="zone_id" name="zone_id">
+                                        <option value="{{ anm.zone_id.zone_id }}" selected>{{ anm.zone_id.zone_name }}</option>
+                                        {% if m == "Modify" %}
+                                            {% for i in zn_all %}
+                                                {% if i.zone_id != anm.zone_id.zone_id %}
+                                                    <option value="{{ i.zone_id }}">{{ i.zone_name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <button class="btn btn-primary" type="submit" {% if m == "Modify" %}onclick="plzalert()"{% endif %}>{{ m }}</button>
+                                  </div>
+                              </div>
+                        </form>
+                       <button class="btn btn-danger" onclick="plzconfirm()" {% if m == "Create" %}style="display: none;"{% endif %}>Delete</button>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -625,151 +697,106 @@
                 </li>
               </ul>
               <div class="tab-content" id="myTabContent">
-                <div
-                  class="tab-pane fade show active"
-                  id="home"
-                  role="tabpanel"
-                  aria-labelledby="home-tab"
-                >
-                  <div class="data-box">
-                    <div class="sec-title">
-                      <h4>Profile</h4>
-                    </div>
-                    <div class="row exp-row">
-                      <h6>Business Development</h6>
-                      <span>Microsoft</span>
-                      <i>Apiral 2011 - Present</i>
-
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Aenean a urna posuere, aliquet elit in, fermentum
-                        ligula. Sed est augue, molestie sed tortor sed, posuere
-                        commodo lectus.
-                      </p>
-                    </div>
-                    <div class="row exp-row">
-                      <h6>Business Development</h6>
-                      <span>Microsoft</span>
-                      <i>Apiral 2011 - Present</i>
-
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Aenean a urna posuere, aliquet elit in, fermentum
-                        ligula. Sed est augue, molestie sed tortor sed, posuere
-                        commodo lectus.
-                      </p>
-                    </div>
-                    <div class="row exp-row last">
-                      <h6>Business Development</h6>
-                      <span>Microsoft</span>
-                      <i>Apiral 2011 - Present</i>
-
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Aenean a urna posuere, aliquet elit in, fermentum
-                        ligula. Sed est augue, molestie sed tortor sed, posuere
-                        commodo lectus.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
+                <div class="tab-content" id="myTabContent">
                 <div
                   class="tab-pane fade exp-cover"
                   id="profile"
                   role="tabpanel"
                   aria-labelledby="profile-tab"
                 >
-                  <section class="gradient-custom-5">
-                    <div class="container py-5">
-                      <div class="main-timeline-5">
-                        <div class="timeline-5 right-5">
-                          <div class="card">
-                            <div class="card-body p-4">
-                              <h5>Title of section 1</h5>
-                              <span class="small text-muted"
-                                ><i class="fas fa-clock me-1"></i>21 March,
-                                2020</span
-                              >
-                              <p class="mt-2 mb-0">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Quisque scelerisque diam non
-                                nisi semper, et elementum lorem ornare. Maecenas
-                                placerat facilisis mollis. Duis sagittis ligula
-                                in sodales vehicula....
-                              </p>
+                  <div class="data-box">
+                    <link
+                      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+                      rel="stylesheet"
+                    />
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="main-box clearfix">
+                            <div class="table-responsive">
+                              <table class="table user-list">
+                                <thead>
+                                  <tr>
+                                    <th><span>Category</span></th>
+                                    <th><span>Content</span></th>
+                                    <th><span>Datetime</span></th>
+                                    <th><span>Edit</span></th>
+                                    <th>
+                                        <a class="btn btn-outline-primary" href="{% url 'write_log' anm.anm_id %}">
+                                        New Log</a>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in dl %}
+                                          <tr>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_cgt }}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_con }}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_dt }}</span
+                                              >
+                                            </td>
+
+                                            </td>
+                                            <td style="width: 20%">
+                                              <a href="{% url 'edit_log' i.dlog_id  %}" class="table-link">
+                                                <span class="fa-stack">
+                                                  <i
+                                                    class="fa fa-square fa-stack-2x"
+                                                  ></i>
+                                                  <i
+                                                    class="fa fa-search-plus fa-stack-1x fa-inverse"
+                                                  ></i>
+                                                </span>
+                                              </a>
+                                              <a href="{% url 'log_delete' i.dlog_id  %}" class="table-link danger" onclick="">
+                                                <span class="fa-stack">
+                                                  <i
+                                                    class="fa fa-square fa-stack-2x"
+                                                  ></i>
+                                                  <i
+                                                    class="fa fa-trash-o fa-stack-1x fa-inverse"
+                                                  ></i>
+                                                </span>
+                                              </a>
+                                            </td>
+                                          </tr>
+                                    {% endfor %}
+                                </tbody>
+                              </table>
                             </div>
-                          </div>
-                        </div>
-                        <div class="timeline-5 right-5">
-                          <div class="card">
-                            <div class="card-body p-4">
-                              <h5>Title of section 2</h5>
-                              <span class="small text-muted"
-                                ><i class="fas fa-clock me-1"></i>5 April,
-                                2020</span
-                              >
-                              <p class="mt-2">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Quisque scelerisque diam non
-                                nisi semper.
-                              </p>
-                              <p class="mb-0">
-                                Libero expedita explicabo eius fugiat quia
-                                aspernatur autem laudantium error architecto
-                                recusandae natus sapiente sit nam eaque,
-                                consectetur porro molestiae ipsam! Deleniti.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="timeline-5 right-5">
-                          <div class="card">
-                            <div class="card-body p-4">
-                              <h5>Title of section 3</h5>
-                              <span class="small text-muted"
-                                ><i class="fas fa-clock me-1"></i>18 August,
-                                2020</span
-                              >
-                              <p class="mt-2 mb-0">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Quisque scelerisque diam non
-                                nisi semper, et elementum lorem ornare. Maecenas
-                                placerat facilisis mollis. Duis sagittis ligula
-                                in sodales vehicula....
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="timeline-5 right-5">
-                          <div class="card">
-                            <div class="card-body p-4">
-                              <h5>Title of section 4</h5>
-                              <span class="small text-muted"
-                                ><i class="fas fa-clock me-1"></i>10 October,
-                                2020</span
-                              >
-                              <p class="mt-2">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Quisque scelerisque diam non
-                                nisi semper, et elementum lorem ornare. Maecenas
-                                placerat facilisis mollis. Duis sagittis ligula
-                                in sodales vehicula....
-                              </p>
-                              <p class="mb-0">
-                                Voluptatibus temporibus esse illum eum
-                                aspernatur, fugiat suscipit natus! Eum corporis
-                                illum nihil officiis tempore. Excepturi illo
-                                natus libero sit doloremque, laborum molestias
-                                rerum pariatur quam ipsam necessitatibus
-                                incidunt, explicabo.
-                              </p>
-                            </div>
+                            <ul class="pagination pull-right">
+                              <li>
+                                <a href="#"
+                                  ><i class="fa fa-chevron-left"></i
+                                ></a>
+                              </li>
+                              <li><a href="#">1</a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">3</a></li>
+                              <li>
+                                <a href="#"
+                                  ><i class="fa fa-chevron-right"></i
+                                ></a>
+                              </li>
+                            </ul>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </section>
+                  </div>
+                </div>
+
+
                 </div>
                 <div
                   class="tab-pane fade exp-cover"
@@ -800,102 +827,157 @@
                               <div
                                 class="d-flex align-items-center mb-4 pb-4 border-bottom"
                               >
-                                <i class="far fa-calendar-alt fa-3x"></i>
+
+                  <script>
+                    function getCurrentTime() {
+                      var now = new Date();
+                      var year = now.getFullYear();
+                      var month = ('0' + (now.getMonth() + 1)).slice(-2);
+                      var day = ('0' + now.getDate()).slice(-2);
+                      var hour = ('0' + now.getHours()).slice(-2);
+                      var minute = ('0' + now.getMinutes()).slice(-2);
+                      var second = ('0' + now.getSeconds()).slice(-2);
+                      var time = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+                      return time;
+                    }
+
+                    window.onload = function() {
+                      var updateTimeElement = document.getElementById('update-time');
+                      var updateButton = document.getElementById('update-button');
+                      var lastUpdateTime = localStorage.getItem('lastUpdateTime');
+
+                      if (lastUpdateTime) {
+                        updateTimeElement.textContent = lastUpdateTime;
+                      }
+
+                      updateButton.addEventListener('click', function() {
+                        var currentTime = getCurrentTime();
+                        updateTimeElement.textContent = currentTime;
+                        localStorage.setItem('lastUpdateTime', currentTime);
+                      });
+                    };
+                  </script>
                                 <div class="ms-3">
                                   <h4
                                     class="text-uppercase fw-weight-bold mb-0"
                                   >
-                                    Wednesday
+                                    Last Update {{ alert }}
                                   </h4>
                                   <p class="text-gray fst-italic mb-0">
-                                    05 June 2023
+                                      {{ today }} <span id="update-time"></span>
                                   </p>
                                 </div>
-                              </div>
+                              <br>
+                      <form method="POST" action="{% url 'check' anm.anm_id %}">
+                            {% csrf_token %}
                               <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck1"
-                                  type="checkbox"
-                                  checked
-                                />
-                                <label class="form-check-label" for="flexCheck1"
+                                <label for="food"
                                   ><span class="fst-italic pl-1"
-                                    >정보시스템 개발 과제</span
+                                    >Food : </span
                                   ></label
                                 >
+                                <input
+                                  type="text"
+                                  id="food"
+                                  name="food"
+                                  value="{{ anm.anm_food }}"
+                                />
                               </div>
                               <div class="form-check mb-3">
                                 <input
                                   class="form-check-input"
-                                  id="flexChec2"
+                                  id="fb"
+                                  name="checked"
                                   type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexChec2"
+                                  value="1" {% if '1' in check_list %}checked{% endif %}>
+                                <label class="form-check-label" for="fb"
                                   ><span class="fst-italic pl-1"
-                                    >기말고사
+                                    >Breakfast(meal)
                                   </span></label
                                 >
                               </div>
                               <div class="form-check mb-3">
                                 <input
                                   class="form-check-input"
-                                  id="flexCheck3"
+                                  id="fl"
+                                  name="checked"
                                   type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck3"
+                                  value="2" {% if '2' in check_list %}checked{% endif %}>
+                                <label class="form-check-label" for="fl"
                                   ><span class="fst-italic pl-1"
-                                    >system architecture</span
+                                    >Lunch(meal)</span
                                   ></label
                                 >
                               </div>
                               <div class="form-check mb-3">
                                 <input
                                   class="form-check-input"
-                                  id="flexCheck4"
+                                  id="fd"
+                                  name="checked"
                                   type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck4"
+                                  value="3" {% if '3' in check_list %}checked{% endif %}>
+                                <label class="form-check-label" for="fd"
                                   ><span class="fst-italic pl-1"
-                                    >Go for a long walk</span
+                                    >Dinner(meal)</span
+                                  ></label
+                                >
+                              </div>
+                              <div class="form-check mb-3">
+                                <label for="mc"
+                                  ><span class="fst-italic pl-1"
+                                    >Medicine : </span
+                                  ></label
+                                >
+                                <input
+                                  type="text"
+                                  id="mc"
+                                  name="mc"
+                                  value="{{ anm.anm_mc }}"
+                                />
+                              </div>
+                              <div class="form-check mb-3">
+                                <input
+                                  class="form-check-input"
+                                  id="mm"
+                                  name="checked"
+                                  type="checkbox"
+                                  value="4" {% if '4' in check_list %}checked{% endif %}>
+                                <label class="form-check-label" for="mm"
+                                  ><span class="fst-italic pl-1"
+                                    >Morning(medicine)</span
                                   ></label
                                 >
                               </div>
                               <div class="form-check mb-3">
                                 <input
                                   class="form-check-input"
-                                  id="flexCheck5"
+                                  id="mn"
+                                  name="checked"
                                   type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck5"
+                                  value="5" {% if '5' in check_list %}checked{% endif %}>
+                                <label class="form-check-label" for="mn"
                                   ><span class="fst-italic pl-1"
-                                    >Pay for the new shoppings</span
+                                    >Noon(medicine)</span
                                   ></label
                                 >
                               </div>
                               <div class="form-check mb-3">
                                 <input
                                   class="form-check-input"
-                                  id="flexCheck6"
+                                  id="em"
+                                  name="checked"
                                   type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck6"
+                                  value="6" {% if '6' in check_list %}checked{% endif %}>
+                                <label class="form-check-label" for="em"
                                   ><span class="fst-italic pl-1"
-                                    >Buy a new sweatshirt</span
+                                    >Evening(medicine)</span
                                   ></label
                                 >
                               </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck7"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck7"
-                                  ><span class="fst-italic pl-1"
-                                    >Go for a long walk</span
-                                  ></label
-                                >
+                            <div>
+                                <button class="btn btn-primary" type="submit" id="update-button">Save</button>
+                            </div>
+                        </form>
                               </div>
                             </div>
                           </div>

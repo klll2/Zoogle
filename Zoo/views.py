@@ -1,18 +1,18 @@
 from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
-from Zoo.models import Area, Zone, Animal, CheckLog, DetailLog, PartTime, Zookeeper
-from Zoo.forms import AnimalForm, ZkpForm, ZoneForm
+from Zoo.models import Area, Zone, Animal, DetailLog, PartTime, Zookeeper
+from Zoo.forms import AnimalForm, ZkpForm, DetailLogForm
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from datetime import datetime
+from datetime import datetime, date
+from django.db.models import Q
 
 
 def user_create(request):
-
     zon = sorted(Zone.objects.all().values_list('zone_id', 'zone_name'))
     pt = sorted(PartTime.objects.all().values_list('pt_id', 'pt_name'))
     join = datetime.now()
@@ -80,10 +80,13 @@ def index(request):
     uid = request.session['username']
     uid = int(uid)
     zkp = Zookeeper.objects.get(pk=uid)
+    zid = zkp.zone.zone_id
     area_all = Area.objects.all()
     zn_all = Zone.objects.all()
     anm_all = Animal.objects.all()
-    return render(request, 'index.html', {'zkp': zkp, 'zn_all': zn_all, 'area_all': area_all, 'anm_all': anm_all})
+    zkp_list = Zookeeper.objects.filter(zone=zid).order_by("pt")
+    return render(request, 'index.html',
+                  {'zkp': zkp, 'zn_all': zn_all, 'area_all': area_all, 'anm_all': anm_all, 'zkp_list': zkp_list})
 
 
 def animal_list(request):
@@ -91,62 +94,153 @@ def animal_list(request):
     return render(request, 'animal/animal_list.html', {'animals': animals})
 
 
-def animal_create(request):
-    form_auto = id_auto(id=11)
-    i = {'anm_id': form_auto}
-    form = AnimalForm(request.POST or None, initial=i)
-
-    if form.is_valid():
-        form.save()
-        return redirect('animal_list')
-
-    return render(request, 'animal/animal_form.html', {'form': form, 'form_auto': form_auto})
-
-
-def animal_update(request, id):
-    animal = Animal.objects.get(anm_id=id)
-    form = AnimalForm(request.POST or None, instance=animal)
-
-    if form.is_valid():
-        form.save()
-        return redirect('animal_list')
-
-    return render(request, 'animal/animal_form.html', {'form': form, 'animal': animal})
-
-
 def animal_delete(request, id):
     animal = Animal.objects.get(anm_id=id)
-
-    if request.method == 'POST':
-        animal.delete()
-        return redirect('animal_list')
-
-    return render(request, 'animal/animal_delete_confirm.html', {'animal': animal})
+    animal.delete()
+    return redirect('index')
 
 
 def id_auto(id):
-    if Area.objects.filter(area_id=id).count() > 0:
-        z = Zone.objects.filter(area_id=id).count() + 1
-        zone_auto = str(id) + str(z)
-        zone_auto.replace(" ", "")
-        return zone_auto
-    elif Zone.objects.filter(zone_id=id).count() > 0:
-        a = Animal.objects.filter(zone_id=id).count() + 1
-        anm_auto = str(id) + str(a)
-        anm_auto.replace(" ", "")
-        return anm_auto
+    anm_all = Animal.objects.all().values_list("anm_id", flat=True)
+    if len(id) == 1:
+        a_zone = Zone.objects.filter(area=id).values_list("zone_id", flat=True).order_by("-zone_id")
+        auto_zone = int(a_zone[0]) + 1
+        return auto_zone
+    elif len(id) >= 2:
+        a_anm = Animal.objects.filter(zone_id=id).values_list("anm_id", flat=True).order_by("-anm_id")
+        auto_anm = int(a_anm[0]) + 1
+        while auto_anm in anm_all:
+            auto_anm += 1
+        return auto_anm
     else:
         return id
 
 
 def zone(request, id):
     zn = Zone.objects.get(zone_id=id)
-    form = ZoneForm(request.POST or None, instance=zn)
     area_all = Area.objects.all()
     zn_all = Zone.objects.all()
+    anm_all = Animal.objects.all()
+    capa = Animal.objects.filter(zone_id=id).count()
+    zkp_list = Zookeeper.objects.filter(zone=id).order_by("pt")
+    zkp_count = zkp_list.count()
+    contents = {'zn': zn,
+                'zn_all': zn_all,
+                'area_all': area_all,
+                'anm_all': anm_all,
+                'capa': capa,
+                'zkp_count': zkp_count,
+                'zkp_list': zkp_list}
 
-    if form.is_valid():
-        form.save()
-        return redirect('zone_list')
+    return render(request, 'zone.html', contents)
 
-    return render(request, 'zone.html', {'form': form, 'zn': zn, 'zn_all': zn_all, 'area_all': area_all})
+
+def animal_detail(request, id):
+    zn_all = Zone.objects.all()
+    anm_list = Animal.objects.all().values_list('anm_id', flat=True)
+    zn_list = Zone.objects.all().values_list('zone_id', flat=True)
+    today = date.today()
+
+    if id in anm_list:
+        m = "Modify"
+        anm = Animal.objects.get(pk=id)
+        check_list = []
+        if anm.anm_check:
+            check_list = list(anm.anm_check)
+        form = AnimalForm(request.POST or None, instance=anm)
+
+        if request.method == 'POST':
+
+            if form.is_valid():
+                form.save()
+                return redirect('animal_detail', id)
+
+        return render(request, 'animal_detail.html', {'anm': anm, 'zn_all': zn_all,
+                                                      'anm_list': anm_list, 'm': m, 'today': today,
+                                                      'form': form, 'check_list': check_list})
+
+    elif id in zn_list:
+        m = "Create"
+        anm_list = Animal.objects.all().values_list("anm_id", flat=True)
+        new_id = id_auto(str(id))
+        anm_1 = {'anm_id': new_id,
+                 'anm_name': "",
+                 'anm_spcs': "",
+                 'anm_city': "",
+                 'anm_sex': "",
+                 'anm_old': "",
+                 'anm_rct': "",
+                 'anm_food': "",
+                 'anm_mc': "",
+                 'anm_check': "",
+                 'zone_id': Zone.objects.get(pk=id)}
+        form = AnimalForm(request.POST or None, initial=anm_1)
+
+        if form.is_valid():
+            form.save()
+            return redirect('zone', id)
+
+        return render(request, 'animal_detail.html', {'anm': anm_1, 'zn_all': zn_all, 'anm_list': anm_list, 'm': m})
+
+    else:
+        return redirect('index')
+
+
+def check(request, id):
+    anm = Animal.objects.get(pk=id)
+
+    if request.method == 'POST':
+        check_list = request.POST.getlist('checked')
+        anm_check = ''.join(check_list)
+        anm.anm_check = anm_check
+        anm.save()
+        return redirect('animal_detail', id)
+
+    return redirect('animal_detail', id)
+
+
+def write_log(request, id):
+    now = datetime.now()
+    if DetailLog.objects.filter(anm=id).exists():
+        anm = DetailLog.objects.filter(anm=id).values_list('dlog_id', flat=True).order_by("-dlog_id")
+        new_did = anm[0] + 1
+    else:
+        new_did = 1
+
+    dl_1 = {'dlog_id': new_did,
+            'dlog_cgr': "",
+            'dlog_con': "",
+            'dlog_dt': "",
+            'anm': id}
+
+    form = DetailLogForm(request.POST or None, initial=dl_1)
+
+    if request.method == 'POST':
+
+        if form.is_valid():
+            form.save()
+            return redirect('animal_detail', id)
+
+        return render(request, "write_log.html", {"form": form, "id": id, "now": now})
+
+
+def edit_log(request, id):
+    now = datetime.now()
+    dl = DetailLog.objects.get(dlog_id=id)
+    form = DetailLogForm(request.POST or None, instance=dl)
+
+    if request.method == 'POST':
+
+        if form.is_valid():
+            form.save()
+            return redirect('animal_detail', id)
+
+    return render(request, "write_log.html", {"form": form, "id": id, "now": now})
+
+
+def log_delete(request, id):
+    dl = DetailLog.objects.get(dlog_id=id)
+    anm = dl.anm
+    dl.delete()
+    return redirect('animal_detail', anm)
+

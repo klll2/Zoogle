@@ -42,9 +42,11 @@ class Animal(models.Model):
     anm_spcs = models.CharField(max_length=45)
     anm_city = models.CharField(max_length=45)
     anm_sex = models.CharField(max_length=20)
-    anm_birth = models.DateField(blank=True, null=True)
+    anm_old = models.IntegerField(blank=True, null=True)
     anm_rct = models.CharField(max_length=45)
-    anm_img = models.TextField(blank=True, null=True)
+    anm_food = models.CharField(max_length=20, blank=True, null=True)
+    anm_mc = models.CharField(max_length=20, blank=True, null=True)
+    anm_check = models.CharField(max_length=10, blank=True, null=True)
     zone_id = models.ForeignKey('Zone', on_delete=models.CASCADE)
 
 
@@ -53,18 +55,18 @@ class DetailLog(models.Model):
     dlog_cgr = models.CharField(max_length=20)
     dlog_con = models.CharField(max_length=100)
     dlog_dt = models.DateTimeField()
-    anm = models.ForeignKey('Animal', on_delete=models.CASCADE)
+    anm = models.ForeignKey('Animal', on_delete=models.CASCADE, default=111)
 
 
 class CheckLog(models.Model):
-    anm_id = models.OneToOneField('Animal', on_delete=models.CASCADE, primary_key=True)
+    clog_id = models.IntegerField(primary_key=True, default=1)
     clog_tm = models.TimeField()
-    clog_food = models.CharField(max_length=45)
-    clog_bf = models.IntegerField()
-    clog_lch = models.IntegerField()
-    clog_dn = models.IntegerField()
+    clog_food = models.CharField(max_length=45, blank=True, null=True)
+    clog_bf = models.BooleanField(default=False)
+    clog_lch = models.BooleanField(default=False)
+    clog_dn = models.BooleanField(default=False)
     clog_mc = models.CharField(max_length=45, blank=True, null=True)
-    clog_mm = models.IntegerField(blank=True, null=True)
-    clog_lm = models.IntegerField(blank=True, null=True)
-    clog_em = models.IntegerField(blank=True, null=True)
+    clog_mm = models.BooleanField(default=False)
+    clog_lm = models.BooleanField(default=False)
+    clog_em = models.BooleanField(default=False)
 

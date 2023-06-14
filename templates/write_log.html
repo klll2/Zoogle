@@ -1,0 +1,19 @@
+<form method="POST" action="{% url 'write_log' id %}">
+    {% csrf_token %}
+   <div class="row-cols-auto">
+    <label for="dlog_id">Log ID: </label> {{ form.dlog_id }}
+   </div><br>
+   <div class="row-cols-auto">
+    <label for="dlog_ctg">Category: </label> {{ form.dlog_cgr }}
+   </div><br>
+   <div class="row-cols-auto">
+    <label for="dlog_con">Content: </label> {{ form.dlog_con }}
+   </div><br>
+   <div class="row-cols-auto">
+    <label for="dlog_dt">Pub Date: </label>
+    <input type="text" id="dlog_dt" name="dlog_dt" value="{{ now|date:'Y-m-d H:i:s' }}" readonly>
+   </div><br>
+   <div class="row-cols-auto">
+    <button class="btn-primary" type="submit">Save</button>
+   </div><br>
+</form>

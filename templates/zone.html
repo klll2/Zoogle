@@ -400,181 +400,83 @@
                               <table class="table user-list">
                                 <thead>
                                   <tr>
-                                    <th><span>Animal</span></th>
-                                    <th><span>Created</span></th>
-                                    <th class="text-center">
-                                      <span>Status</span>
+                                    <th><span>ID</span></th>
+                                    <th><span>Image</span></th>
+                                    <th><span>Name</span></th>
+                                    <th><span>Species</span></th>
+                                    <th><span>Sex</span></th>
+                                    <th><span>Old</span></th>
+                                    <th><span>Zone</span></th>
+                                    <th><span>Edit</span></th>
+                                    <th>
+                                    <a class="btn btn-primary" href="{% url 'animal_detail' zn.zone_id %}">
+                                        New member</a>
                                     </th>
-                                    <th><span>sex</span></th>
-                                    <th>&nbsp;</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
-                                    <td>
-                                      <img
-                                        src="/static/assets/1.jpeg"
-                                        alt=""
-                                        class="img-fluid d-block rounded"
-                                      />
-                                      <a href="#" class="user-link">James</a>
-                                      <span class="user-subhead">monkey</span>
-                                    </td>
-                                    <td>2013/08/08</td>
-                                    <td class="text-center">
-                                      <span class="label label-default"
-                                        >Inactive</span
-                                      >
-                                    </td>
-                                    <td>
-                                      <a href="#">male</a>
-                                    </td>
-                                    <td style="width: 20%">
-                                      <a
-                                        href="animal_detail.html"
-                                        class="table-link"
-                                      >
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-search-plus fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                      <a href="#" class="table-link">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-pencil fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                      <a href="#" class="table-link danger">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-trash-o fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                    </td>
-                                  </tr>
+                                    {% for i in anm_all %}
+                                      {% if i.zone_id.zone_id == zn.zone_id %}
+                                          <tr>
+                                            <td>{{ i.anm_id }}</td>
+                                            <td>
+                                              <img
+                                                src="/static/assets/2.jpeg"
+                                                alt=""
+                                                class="img-thumbnail"
+                                              />
 
-                                  <tr>
-                                    <td>
-                                      <img
-                                        src="/static/assets/2.jpeg"
-                                        alt=""
-                                        class="img-fluid d-block rounded"
-                                      />
-                                      <a href="#" class="user-link">mongsun</a>
-                                      <span class="user-subhead">Monkey</span>
-                                    </td>
-                                    <td>2013/08/12</td>
-                                    <td class="text-center">
-                                      <span class="label label-success"
-                                        >Active</span
-                                      >
-                                    </td>
-                                    <td>
-                                      <a href="#">female</a>
-                                    </td>
-                                    <td style="width: 20%">
-                                      <a
-                                        href="animal_detail.html"
-                                        class="table-link"
-                                      >
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-search-plus fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                      <a href="#" class="table-link">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-pencil fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                      <a href="#" class="table-link danger">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-trash-o fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <img
-                                        src="/static/assets/3.jpeg"
-                                        alt=""
-                                        class="img-fluid d-block rounded"
-                                      />
-                                      <a href="#" class="user-link">mongji</a>
-                                      <span class="user-subhead"
-                                        >Registered</span
-                                      >
-                                    </td>
-                                    <td>2013/03/03</td>
-                                    <td class="text-center">
-                                      <span class="label label-danger"
-                                        >Banned</span
-                                      >
-                                    </td>
-                                    <td>
-                                      <a href="#">male</a>
-                                    </td>
-                                    <td style="width: 20%">
-                                      <a href="#" class="table-link">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-search-plus fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                      <a href="#" class="table-link">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-pencil fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                      <a href="#" class="table-link danger">
-                                        <span class="fa-stack">
-                                          <i
-                                            class="fa fa-square fa-stack-2x"
-                                          ></i>
-                                          <i
-                                            class="fa fa-trash-o fa-stack-1x fa-inverse"
-                                          ></i>
-                                        </span>
-                                      </a>
-                                    </td>
-                                  </tr>
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.anm_name }}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.anm_spcs }}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.anm_sex }}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.anm_old}}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.zone_id.zone_name }}</span
+                                              >
+                                            </td>
+                                            <td style="width: 20%">
+                                              <a href="{% url 'animal_detail' i.anm_id  %}" class="table-link">
+                                                <span class="fa-stack">
+                                                  <i
+                                                    class="fa fa-square fa-stack-2x"
+                                                  ></i>
+                                                  <i
+                                                    class="fa fa-search-plus fa-stack-1x fa-inverse"
+                                                  ></i>
+                                                </span>
+                                              </a>
+                                              <a href="{% url 'animal_delete' i.anm_id  %}" class="table-link danger">
+                                                <span class="fa-stack">
+                                                  <i
+                                                    class="fa fa-square fa-stack-2x"
+                                                  ></i>
+                                                  <i
+                                                    class="fa fa-trash-o fa-stack-1x fa-inverse"
+                                                  ></i>
+                                                </span>
+                                              </a>
+                                            </td>
+                                          </tr>
+                                      {% endif %}
+                                    {% endfor %}
                                 </tbody>
                               </table>
                             </div>
@@ -608,79 +510,48 @@
                 >
                   <div class="container-fluid">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Charts</h1>
-                    <p class="mb-4">
-                      Chart.js is a third party plugin that is used to generate
-                      the charts in this theme. The charts below have been
-                      customized - for further customization options, please
-                      visit the
-                      <a
-                        target="_blank"
-                        href="https://www.chartjs.org/docs/latest/"
-                        >official Chart.js documentation</a
-                      >.
-                    </p>
+                    <h1 class="h3 mb-2 text-gray-800">{{ zn.zone_name }}'s Statistics</h1>
 
-                    <!-- Content Row -->
-                    <div class="row">
-                      <div class="col-xl-8 col-lg-7">
-                        <!-- Area Chart -->
-                        <div class="card shadow mb-4">
-                          <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                              Area Chart
-                            </h6>
-                          </div>
-                          <div class="card-body">
-                            <div class="chart-area">
-                              <canvas id="myAreaChart"></canvas>
-                            </div>
-                            <hr />
-                            Styling for the area chart can be found in the
-                            <code>/js/demo/chart-area-demo.js</code> file.
-                          </div>
-                        </div>
-
-                        <!-- Bar Chart -->
-                        <div class="card shadow mb-4">
-                          <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                              Bar Chart
-                            </h6>
-                          </div>
-                          <div class="card-body">
-                            <div class="chart-bar">
-                              <canvas id="myBarChart"></canvas>
-                            </div>
-                            <hr />
-                            Styling for the bar chart can be found in the
-                            <code>/js/demo/chart-bar-demo.js</code> file.
-                          </div>
-                        </div>
+                          <!-- Bar Chart -->
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                          Available Capacity
+                        </h6>
                       </div>
-
-                      <!-- Donut Chart -->
-                      <div class="col-xl-4 col-lg-5">
-                        <div class="card shadow mb-4">
-                          <!-- Card Header - Dropdown -->
-                          <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                              Donut Chart
-                            </h6>
-                          </div>
-                          <!-- Card Body -->
-                          <div class="card-body">
-                            <div class="chart-pie pt-4">
-                              <canvas id="myPieChart"></canvas>
-                            </div>
-                            <hr />
-                            Styling for the donut chart can be found in the
-                            <code>/js/demo/chart-pie-demo.js</code> file.
-                          </div>
-                        </div>
+                      <div class="card-body">
+                        <div id="container" style="width: 400px; height: 200px; margin: 0 auto"></div>
                       </div>
                     </div>
+
+                    <!-- Google Charts -->
+                    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                    <script type="text/javascript">
+                      google.charts.load('current', { packages: ['corechart'] });
+                      google.charts.setOnLoadCallback(drawChart);
+
+
+                      let zone_max = {{ zn.zone_max }};
+                      let capa = {{ capa }};
+                      let zone_name = "{{ zn.zone_name }}";
+
+                      function drawChart() {
+                        let i = [
+                        ['zone', 'now', 'max'],
+                        [zone_name, capa, zone_max],
+                        ];
+                        let ratio = (1-i[1][1]/i[1][2])*100;
+                        let data = google.visualization.arrayToDataTable(i);
+                        let options = {
+                          title: 'Available Capacity (' + ratio.toFixed(0) + '%)',
+                                                    };
+                        let chart = new google.visualization.BarChart(document.getElementById('container'));
+                        chart.draw(data, options);
+                      }
+                    </script>
+
                   </div>
+
                   <!-- /.container-fluid -->
                 </div>
                 <div
@@ -702,9 +573,10 @@
                   <div
                     class="container mt-4 mb-4 p-3 d-flex justify-content-flex"
                   >
+                  {% for i in zkp_list %}
                     <div class="card p-4">
                       <div
-                        class="image d-flex flex-column justify-content-center align-items-center"
+                        class="image d-flex flex-column justify-content-center align-items-center gap"
                       >
                         <button class="btn btn-secondary">
                           <img
@@ -713,7 +585,7 @@
                             width="100"
                           />
                         </button>
-                        <span class="name mt-3">Jisoo Kim</span>
+                        <span class="name mt-3">{{ i.zkp_name }}</span>
                         <span class="text-secondary">zookeeper</span>
                         <div
                           class="d-flex flex-row justify-content-center align-items-center gap-2"
@@ -722,20 +594,25 @@
                             <table class="addrss-list">
                               <tbody>
                                 <tr>
-                                  <th>ID</th>
-                                  <td>201904484</td>
+                                  <th>ID </th>
+                                  <td>{{ i.zkp_id }}</td>
                                 </tr>
                                 <tr>
-                                  <th>Experience</th>
-                                  <td>5+ Years</td>
+                                  <th>Career</th>
+                                  <td>{{ i.zkp_carr }}</td>
                                 </tr>
                                 <tr>
-                                  <th>phone</th>
-                                  <td>010-1234-5678</td>
+                                  <th>Call</th>
+                                  <td>{{ i.zkp_call }}</td>
+                                </tr>
+                                <tr>
+                                  <th>Part </th>
+                                    <td>{{ i.pt.pt_name }}
+                                        ({{ i.pt.pt_start }}~{{ i.pt.pt_end }})</td>
                                 </tr>
                                 <tr>
                                   <th>Zone</th>
-                                  <td>Monkey</td>
+                                  <td>{{ i.zone.zone_name }}</td>
                                 </tr>
                                 <tr>
                                   <th></th>
@@ -746,102 +623,14 @@
                         </div>
                       </div>
                     </div>
-                    <div class="mx-3"></div>
-                    <div class="card p-4">
-                      <div
-                        class="image d-flex flex-column justify-content-center align-items-center"
-                      >
-                        <button class="btn btn-secondary">
-                          <img
-                            src="https://i.imgur.com/wvxPV9S.png"
-                            height="100"
-                            width="100"
-                          />
-                        </button>
-                        <span class="name mt-3">Jenny Kim</span>
-                        <span class="text-secondary">zookeeper</span>
-                        <div
-                          class="d-flex flex-row justify-content-center align-items-center gap-2"
-                        >
-                          <div class="col-md-9 tit-det">
-                            <table class="addrss-list">
-                              <tbody>
-                                <tr>
-                                  <th>ID</th>
-                                  <td>202004484</td>
-                                </tr>
-                                <tr>
-                                  <th>Experience</th>
-                                  <td>5+ Years</td>
-                                </tr>
-                                <tr>
-                                  <th>phone</th>
-                                  <td>010-1234-5678</td>
-                                </tr>
-                                <tr>
-                                  <th>Zone</th>
-                                  <td>Monkey</td>
-                                </tr>
-                                <tr>
-                                  <th></th>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mx-3"></div>
-                    <div class="card p-4">
-                      <div
-                        class="image d-flex flex-column justify-content-center align-items-center"
-                      >
-                        <button class="btn btn-secondary">
-                          <img
-                            src="https://i.imgur.com/wvxPV9S.png"
-                            height="100"
-                            width="100"
-                          />
-                        </button>
-                        <span class="name mt-3">Jisoo Kim</span>
-                        <span class="text-secondary">zookeeper</span>
-                        <div
-                          class="d-flex flex-row justify-content-center align-items-center gap-2"
-                        >
-                          <div class="col-md-9 tit-det">
-                            <table class="addrss-list">
-                              <tbody>
-                                <tr>
-                                  <th>ID</th>
-                                  <td>201904484</td>
-                                </tr>
-                                <tr>
-                                  <th>Experience</th>
-                                  <td>5+ Years</td>
-                                </tr>
-                                <tr>
-                                  <th>phone</th>
-                                  <td>010-1234-5678</td>
-                                </tr>
-                                <tr>
-                                  <th>Zone</th>
-                                  <td>Monkey</td>
-                                </tr>
-                                <tr>
-                                  <th></th>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
+                  {% endfor %}
+
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
       </div>
       <!-- End of Content Wrapper -->
     </div>

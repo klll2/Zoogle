@@ -385,20 +385,8 @@
                     href="#animal"
                     role="tab"
                     aria-controls="profile"
-                    aria-selected="True"
+                    aria-selected="true"
                     >Animal</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="profile-tab"
-                    data-toggle="tab"
-                    href="#todo"
-                    role="tab"
-                    aria-controls="profile"
-                    aria-selected="false"
-                    >Todo</a
                   >
                 </li>
                 <li class="nav-item">
@@ -439,14 +427,16 @@
                                     <th><span>Name</span></th>
                                     <th><span>Species</span></th>
                                     <th><span>Sex</span></th>
+                                    <th><span>Old</span></th>
                                     <th><span>Zone</span></th>
+                                    <th><span>Edit</span></th>
                                     <th>&nbsp;</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
                                     {% for i in anm_all %}
-                                      {% if i.zone_id == zkp.zone_id %}
+                                      {% if i.zone_id == zkp.zone %}
+                                          <tr>
                                             <td>{{ i.anm_id }}</td>
                                             <td>
                                               <img
@@ -473,11 +463,16 @@
                                             </td>
                                             <td class="text-center">
                                               <span class="label label-default"
-                                                >{{ i.zone_id }}</span
+                                                >{{ i.anm_old }}</span
+                                              >
+                                            </td>
+                                            <td class="text-center">
+                                              <span class="label label-default"
+                                                >{{ i.zone_id.zone_name }}</span
                                               >
                                             </td>
                                             <td style="width: 20%">
-                                              <a href="#" class="table-link">
+                                              <a href="{% url 'animal_detail' i.anm_id  %}" class="table-link">
                                                 <span class="fa-stack">
                                                   <i
                                                     class="fa fa-square fa-stack-2x"
@@ -487,17 +482,7 @@
                                                   ></i>
                                                 </span>
                                               </a>
-                                              <a href="#" class="table-link">
-                                                <span class="fa-stack">
-                                                  <i
-                                                    class="fa fa-square fa-stack-2x"
-                                                  ></i>
-                                                  <i
-                                                    class="fa fa-pencil fa-stack-1x fa-inverse"
-                                                  ></i>
-                                                </span>
-                                              </a>
-                                              <a href="#" class="table-link danger">
+                                              <a href="{% url 'animal_delete' i.anm_id  %}" class="table-link danger" onclick="">
                                                 <span class="fa-stack">
                                                   <i
                                                     class="fa fa-square fa-stack-2x"
@@ -508,9 +493,9 @@
                                                 </span>
                                               </a>
                                             </td>
+                                          </tr>
                                       {% endif %}
                                     {% endfor %}
-                                  </tr>
                                 </tbody>
                               </table>
                             </div>
@@ -535,139 +520,7 @@
                     </div>
                   </div>
                 </div>
-                <div
-                  class="tab-pane fade exp-cover"
-                  id="todo"
-                  role="tabpanel"
-                  aria-labelledby="contact-tab"
-                >
-                  <div class="sec-title">
-                    <h2></h2>
-                  </div>
 
-                  <div
-                    class="holder d-flex align-items-center justify-content-center"
-                  >
-                    <div class="container">
-                      <!-- FOR DEMO PURPOSE -->
-                      <header class="text-center mb-5">
-                        <h4 class="display-4">check list</h4>
-                      </header>
-
-                      <div class="row">
-                        <div class="col-lg-5 mx-auto">
-                          <!-- CHECKBOX LIST -->
-                          <div
-                            class="card rounded border-0 shadow-sm position-relative"
-                          >
-                            <div class="card-body p-5">
-                              <div
-                                class="d-flex align-items-center mb-4 pb-4 border-bottom"
-                              >
-                                <i class="far fa-calendar-alt fa-3x"></i>
-                                <div class="ms-3">
-                                  <h4
-                                    class="text-uppercase fw-weight-bold mb-0"
-                                  >
-                                    Wednesday
-                                  </h4>
-                                  <p class="text-gray fst-italic mb-0">
-                                    05 June 2023
-                                  </p>
-                                </div>
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck1"
-                                  type="checkbox"
-                                  checked
-                                />
-                                <label class="form-check-label" for="flexCheck1"
-                                  ><span class="fst-italic pl-1"
-                                    >정보시스템 개발 과제</span
-                                  ></label
-                                >
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexChec2"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexChec2"
-                                  ><span class="fst-italic pl-1"
-                                    >기말고사
-                                  </span></label
-                                >
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck3"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck3"
-                                  ><span class="fst-italic pl-1"
-                                    >system architecture</span
-                                  ></label
-                                >
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck4"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck4"
-                                  ><span class="fst-italic pl-1"
-                                    >Go for a long walk</span
-                                  ></label
-                                >
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck5"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck5"
-                                  ><span class="fst-italic pl-1"
-                                    >Pay for the new shoppings</span
-                                  ></label
-                                >
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck6"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck6"
-                                  ><span class="fst-italic pl-1"
-                                    >Buy a new sweatshirt</span
-                                  ></label
-                                >
-                              </div>
-                              <div class="form-check mb-3">
-                                <input
-                                  class="form-check-input"
-                                  id="flexCheck7"
-                                  type="checkbox"
-                                />
-                                <label class="form-check-label" for="flexCheck7"
-                                  ><span class="fst-italic pl-1"
-                                    >Go for a long walk</span
-                                  ></label
-                                >
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div
                   class="tab-pane fade gallcoo"
                   id="members"
@@ -688,95 +541,60 @@
                   <div
                     class="container mt-4 mb-4 p-3 d-flex justify-content-flex"
                   >
-                    <div class="card p-4">
-                      <div
-                        class="image d-flex flex-column justify-content-center align-items-center"
-                      >
-                        <button class="btn btn-secondary">
-                          <img
-                            src="https://i.imgur.com/wvxPV9S.png"
-                            height="100"
-                            width="100"
-                          />
-                        </button>
-                        <span class="name mt-3">Jisoo Kim</span>
-                        <span class="text-secondary">zookeeper</span>
-                        <div
-                          class="d-flex flex-row justify-content-center align-items-center gap-2"
-                        >
-                          <div class="col-md-9 tit-det">
-                            <table class="addrss-list">
-                              <tbody>
-                                <tr>
-                                  <th>ID</th>
-                                  <td>201904484</td>
-                                </tr>
-                                <tr>
-                                  <th>Experience</th>
-                                  <td>5+ Years</td>
-                                </tr>
-                                <tr>
-                                  <th>phone</th>
-                                  <td>010-1234-5678</td>
-                                </tr>
-                                <tr>
-                                  <th>Zone</th>
-                                  <td>Monkey</td>
-                                </tr>
-                                <tr>
-                                  <th></th>
-                                </tr>
-                              </tbody>
-                            </table>
+                  {% for i in zkp_list %}
+                    {% if i.zkp_id != zkp.zkp_id %}
+                        <div class="card p-4">
+                          <div
+                            class="image d-flex flex-column justify-content-center align-items-center"
+                          >
+                            <button class="btn btn-secondary">
+                              <img
+                                src="https://i.imgur.com/wvxPV9S.png"
+                                height="100"
+                                width="100"
+                              />
+                            </button>
+                            <span class="name mt-3">{{ i.zkp_name }}</span>
+                            <span class="text-secondary">zookeeper</span>
+                            <div
+                              class="d-flex flex-row justify-content-center align-items-center gap-2"
+                            >
+                              <div class="col-md-9 tit-det">
+                                <table class="addrss-list">
+                                  <tbody>
+                                    <tr>
+                                      <th>ID </th>
+                                      <td>{{ i.zkp_id }}</td>
+                                    </tr>
+                                    <tr>
+                                      <th>Career</th>
+                                      <td>{{ i.zkp_carr }}</td>
+                                    </tr>
+                                    <tr>
+                                      <th>Call</th>
+                                      <td>{{ i.zkp_call }}</td>
+                                    </tr>
+                                    <tr>
+                                      <th>Part </th>
+                                        <td>{{ i.pt.pt_name }}
+                                            ({{ i.pt.pt_start }}~{{ i.pt.pt_end }})</td>
+                                    </tr>
+                                    <tr>
+                                      <th>Zone</th>
+                                      <td>{{ i.zone.zone_name }}</td>
+                                    </tr>
+                                    <tr>
+                                      <th></th>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    <div class="mx-3"></div>
-                    <div class="card p-4">
-                      <div
-                        class="image d-flex flex-column justify-content-center align-items-center"
-                      >
-                        <button class="btn btn-secondary">
-                          <img
-                            src="https://i.imgur.com/wvxPV9S.png"
-                            height="100"
-                            width="100"
-                          />
-                        </button>
-                        <span class="name mt-3">Jenny Kim</span>
-                        <span class="text-secondary">zookeeper</span>
-                        <div
-                          class="d-flex flex-row justify-content-center align-items-center gap-2"
-                        >
-                          <div class="col-md-9 tit-det">
-                            <table class="addrss-list">
-                              <tbody>
-                                <tr>
-                                  <th>ID</th>
-                                  <td>202004484</td>
-                                </tr>
-                                <tr>
-                                  <th>Experience</th>
-                                  <td>5+ Years</td>
-                                </tr>
-                                <tr>
-                                  <th>phone</th>
-                                  <td>010-1234-5678</td>
-                                </tr>
-                                <tr>
-                                  <th>Zone</th>
-                                  <td>Monkey</td>
-                                </tr>
-                                <tr>
-                                  <th></th>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    {% endif %}
+                  {% endfor %}
+
                   </div>
                 </div>
               </div>
