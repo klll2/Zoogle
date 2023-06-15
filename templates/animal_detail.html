@@ -37,8 +37,8 @@
           };
         }
       function plzconfirm() {
-          let i = {{ i }}
-          if (i) {
+          let m = {{ m }}
+          if (m) {
               let result = confirm("Are you sure you want to delete?");
               if (result) {
                 // 사용자가 OK를 선택한 경우
@@ -653,7 +653,7 @@
                                   </div>
                               </div>
                         </form>
-                       <button class="btn btn-danger" onclick="plzconfirm()" {% if m == "Create" %}style="display: none;"{% endif %}>Delete</button>
+                       <a class="btn btn-danger" href="{% url 'animal_delete' anm.anm_id %}" {% if m == "Create" %}style="display: none;"{% endif %}>Delete</a>
                       </div>
                   </div>
                 </div>

@@ -111,10 +111,14 @@ def id_auto(id):
         for i in anm_all:
             if str(i)[0:2] == id and Animal.objects.filter(zone_id=id).exists():
                 a.append(i)
-        a = sorted(a, reverse=True)
-        auto_anm = int(a[0]) + 1
-        while auto_anm in anm_all:
-            auto_anm += 1
+                a = sorted(a, reverse=True)
+        if len(a) > 0:
+            auto_anm = int(a[0]) + 1
+            while auto_anm in anm_all:
+                auto_anm += 1
+        else:
+            auto_anm = int(id + '1')
+
         return auto_anm
     else:
         return id
