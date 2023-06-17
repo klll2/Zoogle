@@ -1,10 +1,13 @@
-<form method="POST" action="{% url 'write_log' id %}">
+<form method="POST"
+      {% if type == "write" %}action="{% url 'write_log' id %}"{% endif %}
+      {% if type == "edit" %}action="{% url 'edit_log' id %}"{% endif %}>
     {% csrf_token %}
    <div class="row-cols-auto">
-    <label for="dlog_id">Log ID: </label> {{ form.dlog_id }}
+    <label for="dlog_id">Log ID: </label>
+    <input type="number" id="dlog_id" name="dlog_id" value="{{ dl.dlog_id }}" readonly>
    </div><br>
    <div class="row-cols-auto">
-    <label for="dlog_ctg">Category: </label> {{ form.dlog_cgr }}
+    <label for="dlog_cgr">Category: </label> {{ form.dlog_cgr }}
    </div><br>
    <div class="row-cols-auto">
     <label for="dlog_con">Content: </label> {{ form.dlog_con }}
@@ -13,7 +16,9 @@
     <label for="dlog_dt">Pub Date: </label>
     <input type="text" id="dlog_dt" name="dlog_dt" value="{{ now|date:'Y-m-d H:i:s' }}" readonly>
    </div><br>
+    <input type="hidden" id="anm" name="anm" value="{{ dl.anm.anm_id }}">
    <div class="row-cols-auto">
     <button class="btn-primary" type="submit">Save</button>
    </div><br>
+    <span>{{ error }}</span>
 </form>

@@ -144,11 +144,13 @@ def zone(request, id):
 
 
 def animal_detail(request, id):
+    area_all = Area.objects.all()
     zn_all = Zone.objects.all()
     anm_list = Animal.objects.all().values_list('anm_id', flat=True)
     zn_list = Zone.objects.all().values_list('zone_id', flat=True)
     today = date.today()
     i = True
+    dl = DetailLog.objects.filter(anm=id).order_by('dlog_id')
 
     if id in anm_list:
         m = "Modify"
@@ -166,7 +168,8 @@ def animal_detail(request, id):
 
         return render(request, 'animal_detail.html', {'anm': anm, 'zn_all': zn_all,
                                                       'anm_list': anm_list, 'm': m, 'today': today,
-                                                      'form': form, 'check_list': check_list, 'i': i})
+                                                      'form': form, 'check_list': check_list, 'i': i,
+                                                      'area_all': area_all, 'dl': dl})
 
     elif id in zn_list:
         m = "Create"
@@ -189,7 +192,9 @@ def animal_detail(request, id):
             form.save()
             return redirect('zone', id)
 
-        return render(request, 'animal_detail.html', {'anm': anm_1, 'zn_all': zn_all, 'anm_list': anm_list, 'm': m})
+        return render(request, 'animal_detail.html', {'anm': anm_1, 'zn_all': zn_all,
+                                                      'anm_list': anm_list, 'm': m,
+                                                      'area_all': area_all})
 
     else:
         return redirect('index')
@@ -210,17 +215,14 @@ def check(request, id):
 
 def write_log(request, id):
     now = datetime.now()
+    new_did = int(str(id)+'01')
+    tp = "write"
     if DetailLog.objects.filter(anm=id).exists():
         anm = DetailLog.objects.filter(anm=id).values_list('dlog_id', flat=True).order_by("-dlog_id")
         new_did = anm[0] + 1
-    else:
-        new_did = 1
 
     dl_1 = {'dlog_id': new_did,
-            'dlog_cgr': "",
-            'dlog_con': "",
-            'dlog_dt': "",
-            'anm': id}
+            'anm': Animal.objects.get(pk=id)}
 
     form = DetailLogForm(request.POST or None, initial=dl_1)
 
@@ -230,26 +232,33 @@ def write_log(request, id):
             form.save()
             return redirect('animal_detail', id)
 
-        return render(request, "write_log.html", {"form": form, "id": id, "now": now})
+        error = form.cleaned_data
+        return render(request, "write_log.html", {"form": form, "id": id, "now": now,
+                                                  'error': error, 'dl': dl_1, 'type': tp})
+
+    return render(request, "write_log.html", {"form": form, "id": id, "now": now, 'dl': dl_1, 'type': tp})
 
 
 def edit_log(request, id):
     now = datetime.now()
     dl = DetailLog.objects.get(dlog_id=id)
     form = DetailLogForm(request.POST or None, instance=dl)
+    tp = "edit"
 
     if request.method == 'POST':
 
         if form.is_valid():
             form.save()
-            return redirect('animal_detail', id)
+            return redirect('animal_detail', dl.anm.anm_id)
 
-    return render(request, "write_log.html", {"form": form, "id": id, "now": now})
+    return render(request, "write_log.html", {"form": form, "id": id, "now": now, 'dl': dl, 'type': tp})
 
 
 def log_delete(request, id):
     dl = DetailLog.objects.get(dlog_id=id)
     anm = dl.anm
     dl.delete()
-    return redirect('animal_detail', anm)
+    return redirect('animal_detail', anm.anm_id)
+
+
 
