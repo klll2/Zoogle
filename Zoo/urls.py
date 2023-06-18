@@ -17,4 +17,6 @@ urlpatterns = [
     path('log_delete/<int:id>/', views.log_delete, name='log_delete'),
     path('write_log/<int:id>/', views.write_log, name='write_log'),
     path('edit_log/<int:id>/', views.edit_log, name='edit_log'),
+    path('search/', views.search, name='search'),
+    path('search_filter/', views.search_filter, name='search_filter'),
 ]

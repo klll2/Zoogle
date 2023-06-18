@@ -261,4 +261,66 @@ def log_delete(request, id):
     return redirect('animal_detail', anm.anm_id)
 
 
+def search(request):
+    uid = request.session['username']
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+    anm_all = Animal.objects.all()
+    return render(request, 'animal_search.html',
+                  {'zkp': zkp, 'zn_all': zn_all, 'area_all': area_all, 'anm_all': anm_all})
+
+
+def search_filter(request):
+    uid = request.session['username']
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+    anm_all = Animal.objects.all()
+    anm_list = Animal.objects.all().values_list('anm_id', flat=True)
+    anm = Animal.objects.all()
+    now = datetime.now().time()
+    meal_time = ["08:00", "13:00", "18:00"]
+    feed = []
+    anm_care = []
+    for t in meal_time:
+        t = datetime.strptime(t, "%H:%M").time()
+        if now > t:
+            c = meal_time.index(str(t)[0:5])+1
+            feed.append(c)
+            feed.append(c+3)
+    anm_list_1 = anm.values_list('anm_id', 'anm_check')
+    for i in anm_list_1:
+        care_list = [int(i[0])]
+        for j in feed:
+            if str(j) not in str(i[1]):
+                if j == 1:
+                    need = 'breakfast'
+                    care_list.append(need)
+                elif j == 2:
+                    need = 'lunch'
+                    care_list.append(need)
+                elif j == 3:
+                    need = 'dinner'
+                    care_list.append(need)
+                elif j == 4:
+                    need = 'medicine(morning)'
+                    care_list.append(need)
+                elif j == 5:
+                    need = 'medicine(noon)'
+                    care_list.append(need)
+                elif j == 6:
+                    need = 'medicine(night)'
+                    care_list.append(need)
+        anm_care.append(care_list)
+
+    return render(request, "animal_search.html", {'zkp': zkp, 'zn_all': zn_all,
+                                                  'area_all': area_all, 'anm_all': anm_all,
+                                                  'anm_care': anm_care, 'anm_list': anm_list})
+
+
+
+
 
