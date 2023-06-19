@@ -9,7 +9,8 @@ class AnimalForm(forms.ModelForm):
         model = Animal
         fields = ['anm_id', 'anm_name', 'anm_spcs',
                   'anm_city', 'anm_sex', 'anm_old',
-                  'anm_rct', 'anm_food', 'anm_mc', 'zone_id']
+                  'anm_rct', 'anm_food', 'anm_mc',
+                  'anm_last', 'anm_join', 'zone_id']
 
     def clean_anm_id(self):
         anm_id = self.cleaned_data['anm_id']
@@ -50,6 +51,14 @@ class AnimalForm(forms.ModelForm):
     def clean_anm_check(self):
         anm_check = self.cleaned_data['anm_check']
         return anm_check
+
+    def clean_anm_last(self):
+        anm_last = self.cleaned_data['anm_last']
+        return anm_last
+
+    def clean_anm_join(self):
+        anm_join = self.cleaned_data['anm_join']
+        return anm_join
 
     def clean_anm_zone_id(self):
         zone_id = self.cleaned_data['zone_id']

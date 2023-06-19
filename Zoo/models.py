@@ -45,8 +45,10 @@ class Animal(models.Model):
     anm_old = models.IntegerField(blank=True, null=True)
     anm_rct = models.CharField(max_length=45)
     anm_food = models.CharField(max_length=20, blank=True, null=True)
-    anm_mc = models.CharField(max_length=20, blank=True, null=True)
+    anm_mc = models.CharField(max_length=20, default='Null')
     anm_check = models.CharField(max_length=10, blank=True, null=True)
+    anm_last = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
+    anm_join = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
     zone_id = models.ForeignKey('Zone', on_delete=models.CASCADE)
 
 

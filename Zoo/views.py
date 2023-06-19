@@ -7,9 +7,8 @@ from Zoo.forms import AnimalForm, ZkpForm, DetailLogForm
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from datetime import datetime, date
-from django.db.models import Q
 
 
 def user_create(request):
@@ -77,9 +76,14 @@ def logout(request):
 
 
 def index(request):
-    uid = request.session['username']
+    uid = request.session.get('username')
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "404.html", {'message': message})
     uid = int(uid)
     zkp = Zookeeper.objects.get(pk=uid)
+    user = get_user_model()
+    user = user.objects.get(username=uid)
     zid = zkp.zone.zone_id
     area_all = Area.objects.all()
     zn_all = Zone.objects.all()
@@ -87,11 +91,6 @@ def index(request):
     zkp_list = Zookeeper.objects.filter(zone=zid).order_by("pt")
     return render(request, 'index.html',
                   {'zkp': zkp, 'zn_all': zn_all, 'area_all': area_all, 'anm_all': anm_all, 'zkp_list': zkp_list})
-
-
-def animal_list(request):
-    animals = Animal.objects.all()
-    return render(request, 'animal/animal_list.html', {'animals': animals})
 
 
 def animal_delete(request, id):
@@ -125,6 +124,12 @@ def id_auto(id):
 
 
 def zone(request, id):
+    uid = request.session.get('username')
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "404.html", {'message': message})
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
     zn = Zone.objects.get(zone_id=id)
     area_all = Area.objects.all()
     zn_all = Zone.objects.all()
@@ -138,26 +143,37 @@ def zone(request, id):
                 'anm_all': anm_all,
                 'capa': capa,
                 'zkp_count': zkp_count,
-                'zkp_list': zkp_list}
+                'zkp_list': zkp_list,
+                'zkp': zkp}
 
     return render(request, 'zone.html', contents)
 
 
 def animal_detail(request, id):
+    uid = request.session.get('username')
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "404.html", {'message': message})
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
     area_all = Area.objects.all()
     zn_all = Zone.objects.all()
     anm_list = Animal.objects.all().values_list('anm_id', flat=True)
     zn_list = Zone.objects.all().values_list('zone_id', flat=True)
-    today = date.today()
+    today = datetime.now()
     i = True
-    dl = DetailLog.objects.filter(anm=id).order_by('dlog_id')
+    dl = DetailLog.objects.filter(anm=id).order_by('-dlog_dt')
 
     if id in anm_list:
         m = "Modify"
         anm = Animal.objects.get(pk=id)
         check_list = []
         if anm.anm_check:
-            check_list = list(anm.anm_check)
+            anm_last_check = anm.anm_last.date()
+            if (today.date() - anm_last_check).days != 0:
+                anm.anm_check = ""
+            else:
+                check_list = list(anm.anm_check)
         form = AnimalForm(request.POST or None, instance=anm)
 
         if request.method == 'POST':
@@ -169,7 +185,7 @@ def animal_detail(request, id):
         return render(request, 'animal_detail.html', {'anm': anm, 'zn_all': zn_all,
                                                       'anm_list': anm_list, 'm': m, 'today': today,
                                                       'form': form, 'check_list': check_list, 'i': i,
-                                                      'area_all': area_all, 'dl': dl})
+                                                      'area_all': area_all, 'dl': dl, 'zkp': zkp})
 
     elif id in zn_list:
         m = "Create"
@@ -185,6 +201,8 @@ def animal_detail(request, id):
                  'anm_food': "",
                  'anm_mc': "",
                  'anm_check': "",
+                 'anm_last': "",
+                 'anm_join': datetime.now(),
                  'zone_id': Zone.objects.get(pk=id)}
         form = AnimalForm(request.POST or None, initial=anm_1)
 
@@ -194,7 +212,7 @@ def animal_detail(request, id):
 
         return render(request, 'animal_detail.html', {'anm': anm_1, 'zn_all': zn_all,
                                                       'anm_list': anm_list, 'm': m,
-                                                      'area_all': area_all})
+                                                      'area_all': area_all, 'zkp': zkp})
 
     else:
         return redirect('index')
@@ -207,6 +225,7 @@ def check(request, id):
         check_list = request.POST.getlist('checked')
         anm_check = ''.join(check_list)
         anm.anm_check = anm_check
+        anm.anm_last = datetime.now()
         anm.save()
         return redirect('animal_detail', id)
 
@@ -294,6 +313,7 @@ def search_filter(request):
     anm_list_1 = anm.values_list('anm_id', 'anm_check')
     for i in anm_list_1:
         care_list = [int(i[0])]
+        mc = anm_all.get(pk=int(i[0])).anm_mc
         for j in feed:
             if str(j) not in str(i[1]):
                 if j == 1:
@@ -305,15 +325,16 @@ def search_filter(request):
                 elif j == 3:
                     need = 'dinner'
                     care_list.append(need)
-                elif j == 4:
-                    need = 'medicine(morning)'
-                    care_list.append(need)
-                elif j == 5:
-                    need = 'medicine(noon)'
-                    care_list.append(need)
-                elif j == 6:
-                    need = 'medicine(night)'
-                    care_list.append(need)
+                if mc and mc != 'Null':
+                    if j == 4:
+                        need = 'medicine(morning)'
+                        care_list.append(need)
+                    elif j == 5:
+                        need = 'medicine(noon)'
+                        care_list.append(need)
+                    elif j == 6:
+                        need = 'medicine(night)'
+                        care_list.append(need)
         anm_care.append(care_list)
 
     return render(request, "animal_search.html", {'zkp': zkp, 'zn_all': zn_all,
