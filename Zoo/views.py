@@ -141,6 +141,7 @@ def animal_detail(request, id): # Animal Detail Page
             anm_last_check = anm.anm_last.date()
             if (today.date() - anm_last_check).days != 0:
                 anm.anm_check = ""
+                anm.save()
             else:
                 check_list = list(anm.anm_check)
         form = AnimalForm(request.POST or None, instance=anm)
