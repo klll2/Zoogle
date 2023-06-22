@@ -57,18 +57,7 @@ class DetailLog(models.Model):
     dlog_cgr = models.CharField(max_length=20)
     dlog_con = models.CharField(max_length=100)
     dlog_dt = models.DateTimeField()
-    anm = models.ForeignKey('Animal', on_delete=models.CASCADE, default=111)
+    anm = models.ForeignKey('Animal', on_delete=models.CASCADE)
 
 
-class CheckLog(models.Model):
-    clog_id = models.IntegerField(primary_key=True, default=1)
-    clog_tm = models.TimeField()
-    clog_food = models.CharField(max_length=45, blank=True, null=True)
-    clog_bf = models.BooleanField(default=False)
-    clog_lch = models.BooleanField(default=False)
-    clog_dn = models.BooleanField(default=False)
-    clog_mc = models.CharField(max_length=45, blank=True, null=True)
-    clog_mm = models.BooleanField(default=False)
-    clog_lm = models.BooleanField(default=False)
-    clog_em = models.BooleanField(default=False)
 

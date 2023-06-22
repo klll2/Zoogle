@@ -1,24 +1,404 @@
-<form method="POST"
-      {% if type == "write" %}action="{% url 'write_log' id %}"{% endif %}
-      {% if type == "edit" %}action="{% url 'edit_log' id %}"{% endif %}>
-    {% csrf_token %}
-   <div class="row-cols-auto">
-    <label for="dlog_id">Log ID: </label>
-    <input type="number" id="dlog_id" name="dlog_id" value="{{ dl.dlog_id }}" readonly>
-   </div><br>
-   <div class="row-cols-auto">
-    <label for="dlog_cgr">Category: </label> {{ form.dlog_cgr }}
-   </div><br>
-   <div class="row-cols-auto">
-    <label for="dlog_con">Content: </label> {{ form.dlog_con }}
-   </div><br>
-   <div class="row-cols-auto">
-    <label for="dlog_dt">Pub Date: </label>
-    <input type="text" id="dlog_dt" name="dlog_dt" value="{{ now|date:'Y-m-d H:i:s' }}" readonly>
-   </div><br>
-    <input type="hidden" id="anm" name="anm" value="{{ dl.anm.anm_id }}">
-   <div class="row-cols-auto">
-    <button class="btn-primary" type="submit">Save</button>
-   </div><br>
-    <span>{{ error }}</span>
-</form>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>Zoogle</title>
+
+    <!-- Custom fonts for this template-->
+    <link
+      href="{% static 'vendor/fontawesome-free/css/all.min.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/fontawsom-all.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/animal_detail.css' %}" />
+  </head>
+
+  <body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <ul
+        class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
+        <!-- Sidebar - Brand -->
+        <a
+          class="sidebar-brand d-flex align-items-center justify-content-center"
+          href="{% url 'index' %}"
+        >
+          <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">Zoogle</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0" />
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+          <a class="nav-link active" href="{% url 'index' %}" id="main-link">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Main</span></a>
+        </li>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              let mainLink = document.getElementById("main-link");
+              mainLink.addEventListener("click", function(event) {
+                  window.location.href = '{% url "index" %}';
+              });
+            });
+        </script>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider" />
+
+        <!-- Heading -->
+        <div class="sidebar-heading">Area</div>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        {% for i in area_all %}
+            <li class="nav-item">
+              <a
+                class="nav-link collapsed"
+                href="#"
+                data-toggle="collapse"
+                data-target="#{{ i.area_id }}"
+                aria-expanded="true"
+                aria-controls="{{ i.area_id }}"
+              >
+                <i class="fas fa-fw fa-cog"></i>
+                <span>{{ i.area_name }}</span>
+              </a>
+              <div
+                id="{{ i.area_id }}"
+                class="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <h6 class="collapse-header">zone:</h6>
+                    {% for j in zn_all %}
+                        {% if j.area_id == i.area_id %}
+                            <a class="collapse-item" href="{% url 'zone' j.zone_id %}" >{{ j.zone_name }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+              </div>
+            </li>
+        {% endfor %}
+
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+        <!-- Sidebar Message -->
+      </ul>
+      <!-- End of Sidebar -->
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <!-- Topbar -->
+          <nav
+            class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+          >
+            <!-- Sidebar Toggle (Topbar) -->
+            <button
+              id="sidebarToggleTop"
+              class="btn btn-link d-md-none rounded-circle mr-3"
+            >
+              <i class="fa fa-bars"></i>
+            </button>
+
+            <!-- Topbar Search -->
+                    <a class="btn btn-primary" href="{% url 'search' %}">
+                    <i class="fas fa-search fa-sm"></i>
+                    <span>Search</span></a>
+
+              <ul class="navbar-nav ml-auto">
+
+              <li class="nav-item dropdown no-arrow">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#user"
+                  id="userDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <span class="mr-2 d-none d-lg-inline text-gray-600 small"
+                    >{{ zkp.zkp_name }}</span
+                  >
+                  <img
+                    class="img-profile rounded-circle"
+                    src="/static/assets/img/undraw_profile.svg">
+
+                </a>
+
+                <!-- Dropdown - User Information -->
+                <div
+                  class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                  aria-labelledby="userDropdown"
+                  id="user"
+                >
+                  <a class="dropdown-item" href="{% url 'index' %}">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profile
+                  </a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Logout
+                  </a>
+
+                </div>
+              </li>
+            </ul>
+          </nav>
+          <!-- End of Topbar -->
+          <div class="container-fluid overcover">
+            <div class="container profile-box">
+              <div class="top-cover">
+                <div class="covwe-inn">
+                  <div class="row no-margin">
+                    <div class="col-md-3 img-c">
+                        <br>
+                      <img src="/static/assets/1.jpeg" class="rounded" />
+                    </div>
+                      <style>
+                      .my-element {
+                        width: 80px;
+                      }
+                      </style>
+                      <div class="my-element"></div>
+                       <div>
+                        <form method="POST"
+                           {% if type == "write" %}action="{% url 'write_log' id %}"{% endif %}
+                           {% if type == "edit" %}action="{% url 'edit_log' id %}"{% endif %}>
+                            {% csrf_token %}
+                            <br>
+                           <div class="row-cols-auto">
+                            <label for="dlog_id">Log ID: </label>
+                            <input type="number" id="dlog_id" name="dlog_id" value="{{ dlog.dlog_id }}" readonly>
+                           </div><br>
+                           <div class="row-cols-auto">
+                            <label for="dlog_cgr">Category: </label> {{ form.dlog_cgr }}
+                           </div><br>
+                           <div class="row-cols-auto">
+                            <label for="dlog_con">Content: </label> {{ form.dlog_con }}
+                           </div><br>
+                           <div class="row-cols-auto">
+                            <label for="dlog_dt">Pub Date: </label>
+                            <input type="text" id="dlog_dt" name="dlog_dt" value="{{ now|date:'Y-m-d H:i:s' }}" readonly>
+                           </div><br>
+                            <input type="hidden" id="anm" name="anm" value="{{ dlog.anm.anm_id }}">
+                           <div class="row-cols-auto">
+                            <button class="btn btn-primary" type="submit" >{{ m }}</button>
+                           </div>
+                        <br>
+                        </form>
+                       <a class="btn btn-danger" href="{% url 'log_delete' dlog.dlog_id %}" {% if m == "Create" %}style="display: none;"{% endif %}>Delete</a>
+                      </div>
+                     <br>
+                   <br><span>{{ error }}</span>
+                  <br>
+                  </div>
+                </div>
+              </div>
+                <br>
+                <br>
+                  <div class="data-box">
+                    <link
+                      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+                      rel="stylesheet"
+                    />
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="main-box clearfix">
+                            <div class="table-responsive">
+                              <table class="table user-list" id="dlog">
+                                <thead>
+                                  <tr id="column">
+                                    <th><span>Log ID</span></th>
+                                    <th><span>Category</span>
+                                    <th><span>Content</span></th>
+                                    <th><span>Datetime</span></th>
+                                    <th><span>Edit</span></th>
+                                    <th>
+                                      <label for="filter-select"></label>
+                                      <select id="filter-select" name="filter-select" onchange="filterData()">
+                                          <option value="" selected>all</option>
+                                        {% for s in dl_cgr %}
+                                            <option value="{{ s }}">{{ s }}</option>
+                                        {% endfor %}
+                                      </select>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody id="dlog_data">
+                                    {% for i in dl %}
+                                          <tr data-dlog_cgr="{{ i.dlog_cgr }}">
+                                            <td class="text">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_id }}</span
+                                              >
+                                            </td>
+                                            <td class="text" id="dlog_cgr">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_cgr }}</span
+                                              >
+                                            </td>
+                                            <td class="text">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_con }}</span
+                                              >
+                                            </td>
+                                            <td class="text">
+                                              <span class="label label-default"
+                                                >{{ i.dlog_dt }}</span
+                                              >
+                                            </td>
+
+                                            </td>
+                                            <td style="width: 20%">
+                                              <a href="{% url 'edit_log' i.dlog_id  %}" class="table-link">
+                                                <span class="fa-stack">
+                                                  <i
+                                                    class="fa fa-square fa-stack-2x"
+                                                  ></i>
+                                                  <i
+                                                    class="fa fa-search-plus fa-stack-1x fa-inverse"
+                                                  ></i>
+                                                </span>
+                                              </a>
+                                              <a href="{% url 'log_delete' i.dlog_id  %}" class="table-link danger" onclick="">
+                                                <span class="fa-stack">
+                                                  <i
+                                                    class="fa fa-square fa-stack-2x"
+                                                  ></i>
+                                                  <i
+                                                    class="fa fa-trash-o fa-stack-1x fa-inverse"
+                                                  ></i>
+                                                </span>
+                                              </a>
+                                            </td>
+                                          </tr>
+                                    {% endfor %}
+                                </tbody>
+                              </table>
+                            <script>
+                              function filterData() {
+                                  let selectElement = document.getElementById("filter-select");
+                                  let selectValue = selectElement.value;
+
+                                  let tbody = document.getElementById("dlog_data");
+                                  let rows = tbody.getElementsByTagName("tr");
+
+                                  for (let i = 0; i < rows.length; i++) {
+                                    let row = rows[i];
+                                    let dlog = row.getAttribute("data-dlog_cgr");
+
+                                    if (selectValue === "" || dlog === selectValue) {
+                                      row.style.display = "table-row"; // 필터링된 행 보이기
+                                    } else {
+                                      row.style.display = "none"; // 필터링되지 않은 행 숨기기
+                                    }
+                                  }
+                                }
+                            </script>
+                            </div>
+                            <ul class="pagination pull-right">
+                              <li>
+                                <a href="#"
+                                  ><i class="fa fa-chevron-left"></i
+                                ></a>
+                              </li>
+                              <li><a href="#">1</a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">3</a></li>
+                              <li>
+                                <a href="#"
+                                  ><i class="fa fa-chevron-right"></i
+                                ></a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Z-Company 2023</span>
+                    </div>
+                </div>
+            </footer>
+
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/static/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="/static/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/static/js/demo/chart-area-demo.js"></script>
+    <script src="/static/js/demo/chart-pie-demo.js"></script>
+  </body>
+  <script src="/static/js/jquery-3.2.1.min.js"></script>
+  <script src="/static/js/popper.min.js"></script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/script.js"></script>
+</html>

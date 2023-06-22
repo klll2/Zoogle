@@ -1,16 +1,13 @@
-from django.db.models import QuerySet
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
-
 from Zoo.models import Area, Zone, Animal, DetailLog, PartTime, Zookeeper
 from Zoo.forms import AnimalForm, ZkpForm, DetailLogForm
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, get_user_model
-from datetime import datetime, date
+from django.contrib.auth import authenticate
+from datetime import datetime
 
 
+# register function
 def user_create(request):
     zon = sorted(Zone.objects.all().values_list('zone_id', 'zone_name'))
     pt = sorted(PartTime.objects.all().values_list('pt_id', 'pt_name'))
@@ -38,7 +35,7 @@ def user_create(request):
 
             if zpw != cpw:
                 Zookeeper.objects.filter(zkp_pw=zpw, zkp_cpw=cpw).delete()
-                return render(request, 'register.html', {'message': 'Passwords do not match.'})
+                return render(request, 'user/register.html', {'message': 'Passwords do not match.'})
 
             User.objects.create_user(username=zid, password=zpw)
 
@@ -47,9 +44,10 @@ def user_create(request):
     else:
         form = ZkpForm()
 
-    return render(request, 'register.html', {'form': form, 'zon': zon, 'pt': pt, 'join': join})
+    return render(request, 'user/register.html', {'form': form, 'zon': zon, 'pt': pt, 'join': join})
 
 
+# login function
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -64,26 +62,26 @@ def user_login(request):
             request.session['username'] = user.username
             return redirect('index')
         else:
-            return render(request, 'login2.html', {'message': 'Invalid username or password.'})
+            return render(request, 'user/login.html', {'message': 'Invalid username or password.'})
 
-    return render(request, 'login2.html')
+    return render(request, 'user/login.html')
 
 
+# logout function
 def logout(request):
     # 세션에서 사용자 정보 삭제
     del request.session['username']
     return redirect('login')
 
 
+# Zookeeper Page
 def index(request):
     uid = request.session.get('username')
     if uid is None:
         message = "Plz Login First"
-        return render(request, "404.html", {'message': message})
+        return render(request, "user/404.html", {'message': message})
     uid = int(uid)
     zkp = Zookeeper.objects.get(pk=uid)
-    user = get_user_model()
-    user = user.objects.get(username=uid)
     zid = zkp.zone.zone_id
     area_all = Area.objects.all()
     zn_all = Zone.objects.all()
@@ -93,12 +91,7 @@ def index(request):
                   {'zkp': zkp, 'zn_all': zn_all, 'area_all': area_all, 'anm_all': anm_all, 'zkp_list': zkp_list})
 
 
-def animal_delete(request, id):
-    animal = Animal.objects.get(anm_id=id)
-    animal.delete()
-    return redirect('index')
-
-
+# Auto ID function
 def id_auto(id):
     anm_all = Animal.objects.all().values_list("anm_id", flat=True)
     if len(id) == 1:
@@ -123,37 +116,12 @@ def id_auto(id):
         return id
 
 
-def zone(request, id):
+# Animal CRUD
+def animal_detail(request, id): # Animal Detail Page
     uid = request.session.get('username')
     if uid is None:
         message = "Plz Login First"
-        return render(request, "404.html", {'message': message})
-    uid = int(uid)
-    zkp = Zookeeper.objects.get(pk=uid)
-    zn = Zone.objects.get(zone_id=id)
-    area_all = Area.objects.all()
-    zn_all = Zone.objects.all()
-    anm_all = Animal.objects.all()
-    capa = Animal.objects.filter(zone_id=id).count()
-    zkp_list = Zookeeper.objects.filter(zone=id).order_by("pt")
-    zkp_count = zkp_list.count()
-    contents = {'zn': zn,
-                'zn_all': zn_all,
-                'area_all': area_all,
-                'anm_all': anm_all,
-                'capa': capa,
-                'zkp_count': zkp_count,
-                'zkp_list': zkp_list,
-                'zkp': zkp}
-
-    return render(request, 'zone.html', contents)
-
-
-def animal_detail(request, id):
-    uid = request.session.get('username')
-    if uid is None:
-        message = "Plz Login First"
-        return render(request, "404.html", {'message': message})
+        return render(request, "user/404.html", {'message': message})
     uid = int(uid)
     zkp = Zookeeper.objects.get(pk=uid)
     area_all = Area.objects.all()
@@ -161,8 +129,9 @@ def animal_detail(request, id):
     anm_list = Animal.objects.all().values_list('anm_id', flat=True)
     zn_list = Zone.objects.all().values_list('zone_id', flat=True)
     today = datetime.now()
-    i = True
     dl = DetailLog.objects.filter(anm=id).order_by('-dlog_dt')
+    dl_cgr = list(set(dl.values_list('dlog_cgr', flat=True)))
+    dl_count = dl.count()
 
     if id in anm_list:
         m = "Modify"
@@ -184,8 +153,8 @@ def animal_detail(request, id):
 
         return render(request, 'animal_detail.html', {'anm': anm, 'zn_all': zn_all,
                                                       'anm_list': anm_list, 'm': m, 'today': today,
-                                                      'form': form, 'check_list': check_list, 'i': i,
-                                                      'area_all': area_all, 'dl': dl, 'zkp': zkp})
+                                                      'form': form, 'check_list': check_list, 'area_all': area_all,
+                                                      'dl': dl, 'zkp': zkp, 'dl_cgr': dl_cgr, 'dl_count': dl_count})
 
     elif id in zn_list:
         m = "Create"
@@ -218,6 +187,13 @@ def animal_detail(request, id):
         return redirect('index')
 
 
+def animal_delete(request, id):
+    animal = Animal.objects.get(anm_id=id)
+    animal.delete()
+    return redirect('index')
+
+
+# check function with Animal
 def check(request, id):
     anm = Animal.objects.get(pk=id)
 
@@ -232,56 +208,12 @@ def check(request, id):
     return redirect('animal_detail', id)
 
 
-def write_log(request, id):
-    now = datetime.now()
-    new_did = int(str(id)+'01')
-    tp = "write"
-    if DetailLog.objects.filter(anm=id).exists():
-        anm = DetailLog.objects.filter(anm=id).values_list('dlog_id', flat=True).order_by("-dlog_id")
-        new_did = anm[0] + 1
-
-    dl_1 = {'dlog_id': new_did,
-            'anm': Animal.objects.get(pk=id)}
-
-    form = DetailLogForm(request.POST or None, initial=dl_1)
-
-    if request.method == 'POST':
-
-        if form.is_valid():
-            form.save()
-            return redirect('animal_detail', id)
-
-        error = form.cleaned_data
-        return render(request, "write_log.html", {"form": form, "id": id, "now": now,
-                                                  'error': error, 'dl': dl_1, 'type': tp})
-
-    return render(request, "write_log.html", {"form": form, "id": id, "now": now, 'dl': dl_1, 'type': tp})
-
-
-def edit_log(request, id):
-    now = datetime.now()
-    dl = DetailLog.objects.get(dlog_id=id)
-    form = DetailLogForm(request.POST or None, instance=dl)
-    tp = "edit"
-
-    if request.method == 'POST':
-
-        if form.is_valid():
-            form.save()
-            return redirect('animal_detail', dl.anm.anm_id)
-
-    return render(request, "write_log.html", {"form": form, "id": id, "now": now, 'dl': dl, 'type': tp})
-
-
-def log_delete(request, id):
-    dl = DetailLog.objects.get(dlog_id=id)
-    anm = dl.anm
-    dl.delete()
-    return redirect('animal_detail', anm.anm_id)
-
-
+# search for check function
 def search(request):
     uid = request.session['username']
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "user/404.html", {'message': message})
     uid = int(uid)
     zkp = Zookeeper.objects.get(pk=uid)
     area_all = Area.objects.all()
@@ -293,6 +225,9 @@ def search(request):
 
 def search_filter(request):
     uid = request.session['username']
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "user/404.html", {'message': message})
     uid = int(uid)
     zkp = Zookeeper.objects.get(pk=uid)
     area_all = Area.objects.all()
@@ -342,6 +277,108 @@ def search_filter(request):
                                                   'anm_care': anm_care, 'anm_list': anm_list})
 
 
+# Log CRUD with Animal
+def write_log(request, id):
+    uid = request.session.get('username')
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "user/404.html", {'message': message})
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+    dl = DetailLog.objects.filter(anm=id).order_by('-dlog_dt')
+    dl_cgr = list(set(dl.values_list('dlog_cgr', flat=True)))
+    dl_count = dl.count()
+    now = datetime.now()
+    new_did = int(str(id)+'01')
+    tp = "write"
+    m = 'Create'
+    if dl.exists():
+        anm = dl.values_list('dlog_id', flat=True).order_by("-dlog_id")
+        new_did = anm[0] + 1
+
+    dlog = {'dlog_id': new_did,
+            'anm': Animal.objects.get(pk=id)}
+
+    form = DetailLogForm(request.POST or None, initial=dlog)
+
+    if request.method == 'POST':
+
+        if form.is_valid():
+            form.save()
+            return redirect('animal_detail', id)
+
+        error = form.cleaned_data
+        return render(request, "write_log.html", {"form": form, "id": id, "now": now,
+                                                  'error': error, 'dlog': dlog, 'type': tp, 'zn_all': zn_all,
+                                                  'm': m, 'area_all': area_all, 'dl': dl, 'zkp': zkp,
+                                                  'dl_cgr': dl_cgr, 'dl_count': dl_count})
+
+    return render(request, "write_log.html", {"form": form, "id": id, "now": now, 'dlog': dlog,
+                                              'type': tp, 'zn_all': zn_all, 'm': m, 'area_all': area_all,
+                                              'dl': dl, 'zkp': zkp, 'dl_cgr': dl_cgr, 'dl_count': dl_count})
 
 
+def edit_log(request, id):
+    uid = request.session.get('username')
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "user/404.html", {'message': message})
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+    dlog = DetailLog.objects.get(dlog_id=id)
+    dl = DetailLog.objects.filter(anm=dlog.anm).order_by('-dlog_dt')
+    dl_cgr = list(set(dl.values_list('dlog_cgr', flat=True)))
+    dl_count = dl.count()
+    now = datetime.now()
+    dlog = DetailLog.objects.get(dlog_id=id)
+    form = DetailLogForm(request.POST or None, instance=dlog)
+    tp = "edit"
+    m = "Modify"
 
+    if request.method == 'POST':
+
+        if form.is_valid():
+            form.save()
+            return redirect('animal_detail', dlog.anm.anm_id)
+
+    return render(request, "write_log.html", {"form": form, "id": id, "now": now, 'dlog': dlog,
+                                              'type': tp, 'zn_all': zn_all, 'm': m, 'area_all': area_all,
+                                              'dl': dl, 'zkp': zkp, 'dl_cgr': dl_cgr, 'dl_count': dl_count})
+
+
+def log_delete(request, id):
+    dl = DetailLog.objects.get(dlog_id=id)
+    anm = dl.anm
+    dl.delete()
+    return redirect('animal_detail', anm.anm_id)
+
+
+# Zone Page
+def zone(request, id):
+    uid = request.session.get('username')
+    if uid is None:
+        message = "Plz Login First"
+        return render(request, "user/404.html", {'message': message})
+    uid = int(uid)
+    zkp = Zookeeper.objects.get(pk=uid)
+    zn = Zone.objects.get(zone_id=id)
+    area_all = Area.objects.all()
+    zn_all = Zone.objects.all()
+    anm_all = Animal.objects.all()
+    capa = Animal.objects.filter(zone_id=id).count()
+    zkp_list = Zookeeper.objects.filter(zone=id).order_by("pt")
+    zkp_count = zkp_list.count()
+    contents = {'zn': zn,
+                'zn_all': zn_all,
+                'area_all': area_all,
+                'anm_all': anm_all,
+                'capa': capa,
+                'zkp_count': zkp_count,
+                'zkp_list': zkp_list,
+                'zkp': zkp}
+
+    return render(request, 'zone.html', contents)

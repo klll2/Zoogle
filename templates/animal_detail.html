@@ -85,11 +85,19 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
-          <a class="nav-link" href="{%url 'index' %}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Main</span></a
-          >
+          <a class="nav-link active" href="{% url 'index' %}" id="main-link">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Main</span></a>
         </li>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              let mainLink = document.getElementById("main-link");
+              mainLink.addEventListener("click", function(event) {
+                  window.location.href = '{% url "index" %}';
+              });
+            });
+        </script>
 
         <!-- Divider -->
         <hr class="sidebar-divider" />
@@ -121,7 +129,7 @@
                   <h6 class="collapse-header">zone:</h6>
                     {% for j in zn_all %}
                         {% if j.area_id == i.area_id %}
-                            <a class="collapse-item" href="{%url 'zone' j.zone_id %}" >{{ j.zone_name }}</a>
+                            <a class="collapse-item" href="{% url 'zone' j.zone_id %}" >{{ j.zone_name }}</a>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -283,7 +291,33 @@
                   </div>
                 </div>
               </div>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                var tabs = document.querySelectorAll('.nav-link');
+                var tabContents = document.querySelectorAll('.tab-pane');
 
+                tabs.forEach(function(tab) {
+                  tab.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    // 모든 탭과 탭 내용 숨기기
+                    tabs.forEach(function(t) {
+                      t.classList.remove('active');
+                    });
+
+                    tabContents.forEach(function(content) {
+                      content.classList.remove('show', 'active');
+                    });
+
+                    // 클릭한 탭과 해당 탭 내용 보이기
+                    tab.classList.add('active');
+                    var target = document.querySelector(tab.getAttribute('href'));
+                    target.classList.add('show', 'active');
+                  });
+                });
+              });
+            </script>
+            {% if m == 'Modify' %}
               <ul class="nav nav-tabs" id="myTab" role="tablist">
 
                 <li class="nav-item">
@@ -328,29 +362,38 @@
                         <div class="col-lg-12">
                           <div class="main-box clearfix">
                             <div class="table-responsive">
-                              <table class="table user-list">
+                              <table class="table user-list" id="dlog">
                                 <thead>
-                                  <tr>
+                                  <tr id="column">
                                     <th><span>Log ID</span></th>
                                     <th><span>Category</span>
                                     <th><span>Content</span></th>
                                     <th><span>Datetime</span></th>
                                     <th><span>Edit</span></th>
                                     <th>
-                                        <a class="btn btn-outline-primary" href="{% url 'write_log' anm.anm_id %}">
+                                      <label for="filter-select"></label>
+                                      <select id="filter-select" name="filter-select" onchange="filterData()">
+                                          <option value="" selected>all</option>
+                                        {% for s in dl_cgr %}
+                                            <option value="{{ s }}">{{ s }}</option>
+                                        {% endfor %}
+                                      </select>
+                                    </th>
+                                    <th>
+                                        <a class="btn btn-primary" href="{% url 'write_log' anm.anm_id %}">
                                         New Log</a>
                                     </th>
                                   </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="dlog_data">
                                     {% for i in dl %}
-                                          <tr>
+                                          <tr data-dlog_cgr="{{ i.dlog_cgr }}">
                                             <td class="text">
                                               <span class="label label-default"
                                                 >{{ i.dlog_id }}</span
                                               >
                                             </td>
-                                            <td class="text">
+                                            <td class="text" id="dlog_cgr">
                                               <span class="label label-default"
                                                 >{{ i.dlog_cgr }}</span
                                               >
@@ -393,6 +436,26 @@
                                     {% endfor %}
                                 </tbody>
                               </table>
+                            <script>
+                              function filterData() {
+                                  let selectElement = document.getElementById("filter-select");
+                                  let selectValue = selectElement.value;
+
+                                  let tbody = document.getElementById("dlog_data");
+                                  let rows = tbody.getElementsByTagName("tr");
+
+                                  for (let i = 0; i < rows.length; i++) {
+                                    let row = rows[i];
+                                    let dlog = row.getAttribute("data-dlog_cgr");
+
+                                    if (selectValue === "" || dlog === selectValue) {
+                                      row.style.display = "table-row"; // 필터링된 행 보이기
+                                    } else {
+                                      row.style.display = "none"; // 필터링되지 않은 행 숨기기
+                                    }
+                                  }
+                                }
+                            </script>
                             </div>
                             <ul class="pagination pull-right">
                               <li>
@@ -604,11 +667,10 @@
                     </div>
                   </div>
                 </div>
-
-
-              </div>
+              {% endif %}
             </div>
           </div>
+        </div>
 
 
             <footer class="sticky-footer bg-white">

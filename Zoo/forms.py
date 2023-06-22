@@ -1,5 +1,5 @@
 from django import forms
-from Zoo.models import Animal, Zone, PartTime, Zookeeper, CheckLog, DetailLog
+from Zoo.models import Animal, Zone, Zookeeper, DetailLog
 
 
 class AnimalForm(forms.ModelForm):
@@ -164,54 +164,3 @@ class DetailLogForm(forms.ModelForm):
         anm = self.cleaned_data['anm']
         return anm
 
-
-class CheckLogForm(forms.ModelForm):
-    cleaned_data = {}
-
-    class Meta:
-        model = CheckLog
-        fields = ['clog_id', 'clog_tm', 'clog_food', 'clog_bf', 'clog_lch', 'clog_dn', 'clog_mc', 'clog_mm', 'clog_lm', 'clog_em']
-
-    def clean_clog_id(self):
-        clog_id = self.cleaned_data['clog_id']
-        return clog_id
-
-    def clean_clog_tm(self):
-        clog_tm = self.cleaned_data['clog_tm']
-        return clog_tm
-
-    def clean_clog_food(self):
-        clog_food = self.cleaned_data['clog_food']
-        if clog_food == 'None':
-            clog_food = None
-        return clog_food
-
-    def clean_clog_bf(self):
-        clog_bf = self.cleaned_data['clog_bf']
-        return clog_bf
-
-    def clean_clog_lch(self):
-        clog_lch = self.cleaned_data['clog_lch']
-        return clog_lch
-
-    def clean_clog_dn(self):
-        clog_dn = self.cleaned_data['clog_dn']
-        return clog_dn
-
-    def clean_clog_mc(self):
-        clog_mc = self.cleaned_data['clog_mc']
-        if clog_mc == 'None':
-            clog_mc = None
-        return clog_mc
-
-    def clean_clog_mm(self):
-        clog_mm = self.cleaned_data['clog_mm']
-        return clog_mm
-
-    def clean_clog_lm(self):
-        clog_lm = self.cleaned_data['clog_lm']
-        return clog_lm
-
-    def clean_clog_em(self):
-        clog_em = self.cleaned_data['clog_em']
-        return clog_em

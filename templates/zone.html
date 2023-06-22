@@ -175,12 +175,12 @@
           <div class="container-fluid overcover">
             <div class="container profile-box">
               <div class="top-cover">
-                <div class="covwe-inn">
                   <div class="row no-margin">
                     <div class="col-md-9 tit-det">
-                      <h1>{{ zn.zone_name }}</h1>
+                        <br>
+                      <h1>{{ zn.zone_name }} Zone</h1>
+                        <br>
                     </div>
-                  </div>
                 </div>
               </div>
               <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -361,7 +361,7 @@
                         </h6>
                       </div>
                       <div class="card-body">
-                        <div id="container" style="width: 400px; height: 200px; margin: 0 auto"></div>
+                        <div id="container1" style="width: 400px; height: 200px; margin: 0 auto"></div>
                       </div>
                     </div>
 
@@ -375,21 +375,53 @@
                       let zone_max = {{ zn.zone_max }};
                       let capa = {{ capa }};
                       let zone_name = "{{ zn.zone_name }}";
+                      let zkp = {{ zkp_count }};
 
                       function drawChart() {
                         let i = [
                         ['zone', 'now', 'max'],
                         [zone_name, capa, zone_max],
                         ];
-                        let ratio = (1-i[1][1]/i[1][2])*100;
-                        let data = google.visualization.arrayToDataTable(i);
-                        let options = {
-                          title: 'Available Capacity (' + ratio.toFixed(0) + '%)',
+                        let ratio1 = (1-i[1][1]/i[1][2])*100;
+                        let message1 = '';
+                        if (ratio1 <= 0) {
+                            message1 = "Alert : There's Full!! Do Something!!"
+                        }
+                        let data1 = google.visualization.arrayToDataTable(i);
+                        let options1 = {
+                          title: 'Available Capacity (' + ratio1.toFixed(1) + '%)\n' + message1,
                                                     };
-                        let chart = new google.visualization.BarChart(document.getElementById('container'));
-                        chart.draw(data, options);
+                        let chart1 = new google.visualization.BarChart(document.getElementById('container1'));
+                        chart1.draw(data1, options1);
+
+                        let j = [
+                        ['zone', 'zkp', 'anm'],
+                        [zone_name, zkp, capa],
+                        ];
+                        let message2 = '';
+                        let ratio2 = j[1][2]/j[1][1];
+                        if (ratio2 >= 3 || zkp < 3) {
+                            message2 = "Alert : So tired.. Plz hire more zookeepers..."
+                        }
+                        let data2 = google.visualization.arrayToDataTable(j);
+                        let options2 = {
+                          title: '1 Zookeeper is managing ' + ratio2.toFixed(1) + ' Animals now.\n' + message2,
+                                                    };
+                        let chart2 = new google.visualization.BarChart(document.getElementById('container2'));
+                        chart2.draw(data2, options2);
                       }
                     </script>
+
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                          Zookeeper-Animal Ratio
+                        </h6>
+                      </div>
+                      <div class="card-body">
+                        <div id="container2" style="width: 400px; height: 200px; margin: 0 auto"></div>
+                      </div>
+                    </div>
 
                   </div>
 
