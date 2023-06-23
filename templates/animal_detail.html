@@ -215,7 +215,10 @@
                 <div class="covwe-inn">
                   <div class="row no-margin">
                     <div class="col-md-3 img-c">
-                      <img src="/static/assets/1.jpeg" class="rounded" />
+                        <br><br>
+                      <img src="/static/assets/2.png"
+                           alt=""
+                           class="img-thumbnail" />
                     </div>
                       <style>
                       .my-element {
@@ -511,35 +514,6 @@
                                 class="d-flex align-items-center mb-4 pb-4 border-bottom"
                               >
 
-                  <script>
-                    function getCurrentTime() {
-                      var now = new Date();
-                      var year = now.getFullYear();
-                      var month = ('0' + (now.getMonth() + 1)).slice(-2);
-                      var day = ('0' + now.getDate()).slice(-2);
-                      var hour = ('0' + now.getHours()).slice(-2);
-                      var minute = ('0' + now.getMinutes()).slice(-2);
-                      var second = ('0' + now.getSeconds()).slice(-2);
-                      var time = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-                      return time;
-                    }
-
-                    window.onload = function() {
-                      var updateTimeElement = document.getElementById('update-time');
-                      var updateButton = document.getElementById('update-button');
-                      var lastUpdateTime = localStorage.getItem('lastUpdateTime');
-
-                      if (lastUpdateTime) {
-                        updateTimeElement.textContent = lastUpdateTime;
-                      }
-
-                      updateButton.addEventListener('click', function() {
-                        var currentTime = getCurrentTime();
-                        updateTimeElement.textContent = currentTime;
-                        localStorage.setItem('lastUpdateTime', currentTime);
-                      });
-                    };
-                  </script>
                                 <div class="ms-3">
                                   <h4
                                     class="text-uppercase fw-weight-bold mb-0"

@@ -77,7 +77,7 @@ def logout(request):
 # Zookeeper Page
 def index(request):
     uid = request.session.get('username')
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
@@ -119,7 +119,7 @@ def id_auto(id):
 # Animal CRUD
 def animal_detail(request, id): # Animal Detail Page
     uid = request.session.get('username')
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
@@ -133,11 +133,11 @@ def animal_detail(request, id): # Animal Detail Page
     dl_cgr = list(set(dl.values_list('dlog_cgr', flat=True)))
     dl_count = dl.count()
 
-    if id in anm_list:
+    if id in anm_list: # index, search animal - animal detail
         m = "Modify"
         anm = Animal.objects.get(pk=id)
         check_list = []
-        if anm.anm_check:
+        if anm.anm_check: # check reset function
             anm_last_check = anm.anm_last.date()
             if (today.date() - anm_last_check).days != 0:
                 anm.anm_check = ""
@@ -157,7 +157,7 @@ def animal_detail(request, id): # Animal Detail Page
                                                       'form': form, 'check_list': check_list, 'area_all': area_all,
                                                       'dl': dl, 'zkp': zkp, 'dl_cgr': dl_cgr, 'dl_count': dl_count})
 
-    elif id in zn_list:
+    elif id in zn_list: # zone - animal detail
         m = "Create"
         anm_list = Animal.objects.all().values_list("anm_id", flat=True)
         new_id = id_auto(str(id))
@@ -212,7 +212,7 @@ def check(request, id):
 # search for check function
 def search(request):
     uid = request.session['username']
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
@@ -226,7 +226,7 @@ def search(request):
 
 def search_filter(request):
     uid = request.session['username']
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
@@ -281,7 +281,7 @@ def search_filter(request):
 # Log CRUD with Animal
 def write_log(request, id):
     uid = request.session.get('username')
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
@@ -323,7 +323,7 @@ def write_log(request, id):
 
 def edit_log(request, id):
     uid = request.session.get('username')
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
@@ -361,7 +361,7 @@ def log_delete(request, id):
 # Zone Page
 def zone(request, id):
     uid = request.session.get('username')
-    if uid is None:
+    if uid is None: # Error Page
         message = "Plz Login First"
         return render(request, "user/404.html", {'message': message})
     uid = int(uid)
