@@ -11,4 +11,4 @@ There are some usuful functions(1.animal's log, 2.task finder, etc.) for more ca
 - Overwork state : You can check which zone the overwork occured at by graph of overwork ratio for each zone's
 
 ###ERD
-![image](https://github.com/klll2/Zoogle/assets/60285296/042774b2-c400-4218-967e-55e688e08596)
+- ![image](https://github.com/klll2/Zoogle/assets/60285296/042774b2-c400-4218-967e-55e688e08596)
